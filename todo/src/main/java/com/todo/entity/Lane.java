@@ -1,27 +1,32 @@
 package com.todo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
-public class Lanes {
+public class Lane {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private String name;
-    private int workspaceId;
+
     private int laneOrder;
+
+    @OneToMany(mappedBy = "lane")
+    private List<Task> tasks;
+
+    @ManyToOne
+    private Workspace workspace;
 
     public int getId() {
         return id;
     }
 
     public int getWorkspaceId() {
-        return workspaceId;
+        return workspace.getId();
     }
 
     public int getLaneOrder() {
@@ -32,8 +37,8 @@ public class Lanes {
         return name;
     }
 
-    public void setWorkspaceId(int workspaceId) {
-        this.workspaceId = workspaceId;
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
     }
 
     public void setLaneOrder(int laneOrder) {

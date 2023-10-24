@@ -15,7 +15,6 @@ public class Task {
     private String description;
 
     private int taskOrder;
-    private int workspaceId;
 
     @OneToOne
     private Lane lane;
@@ -27,7 +26,7 @@ public class Task {
     }
 
     public int getLaneId() {
-        return laneId;
+        return lane.getId();
     }
 
     public int getTaskOrder() {
@@ -35,7 +34,7 @@ public class Task {
     }
 
     public int getWorkspaceId() {
-        return workspaceId;
+        return workspace.getId();
     }
 
     public String getName() {
@@ -46,16 +45,16 @@ public class Task {
         return description;
     }
 
-    public void setLaneId(int laneId) {
-        this.laneId = laneId;
+    public void setLane(Lane lane) {
+        this.lane = lane;
     }
 
     public void setTaskOrder(int taskOrder) {
         this.taskOrder = taskOrder;
     }
 
-    public void setWorkspaceId(int workspaceId) {
-        this.workspaceId = workspaceId;
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
     }
 
     public void setName(String name) {
