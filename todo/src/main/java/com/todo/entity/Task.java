@@ -1,9 +1,8 @@
 package com.todo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class Task {
@@ -15,9 +14,13 @@ public class Task {
     private String name;
     private String description;
 
-    private int laneId;
     private int taskOrder;
     private int workspaceId;
+
+    @OneToOne
+    private Lane lane;
+    @ManyToOne
+    private Workspace workspace;
 
     public int getId() {
         return id;
