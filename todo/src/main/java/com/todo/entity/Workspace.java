@@ -15,7 +15,15 @@ public class Workspace {
     private int id;
     private String name;
 
-    private List<User> users;
-    private List<Lanes> lanes;
-    private List<Task> tasks;
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }
