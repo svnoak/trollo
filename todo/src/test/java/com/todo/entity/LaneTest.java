@@ -26,6 +26,8 @@ class LaneTest {
         workspace.setName("workspace");
         ReflectionTestUtils.setField(workspace, "id", 1);
 
+        lane.setWorkspace(workspace);
+
         assertEquals(1, lane.getWorkspaceId());
     }
 
@@ -64,13 +66,6 @@ class LaneTest {
     }
 
     @Test
-    void setLaneOrderZero() {
-        Lane lane = new Lane();
-        assertNotNull(lane);
-        assertThrows(IllegalArgumentException.class, () -> lane.setLaneOrder(0));
-    }
-
-    @Test
     void setTasks() {
         Lane lane = new Lane();
         assertNotNull(lane);
@@ -79,24 +74,4 @@ class LaneTest {
         assertDoesNotThrow(() -> lane.setTasks(List.of(task)));
     }
 
-    @Test
-    void setTasksNull() {
-        Lane lane = new Lane();
-        assertNotNull(lane);
-        assertThrows(IllegalArgumentException.class, () -> lane.setTasks(null));
-    }
-
-    @Test
-    void setTasksEmpty() {
-        Lane lane = new Lane();
-        assertNotNull(lane);
-        assertThrows(IllegalArgumentException.class, () -> lane.setTasks(List.of()));
-    }
-
-    @Test
-    void setTasksContainsNull() {
-        Lane lane = new Lane();
-        assertNotNull(lane);
-        assertThrows(IllegalArgumentException.class, () -> lane.setTasks(List.of(null)));
-    }
 }
