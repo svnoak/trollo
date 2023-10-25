@@ -1,4 +1,4 @@
-package com.todo.entity;
+package com.todo.model;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;

@@ -1,8 +1,6 @@
-package com.todo.entity;
+package com.todo.model;
 
 import jakarta.persistence.*;
-
-import java.util.List;
 
 @Entity
 public class Task {

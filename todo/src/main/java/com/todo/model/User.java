@@ -1,4 +1,4 @@
-package com.todo.entity;
+package com.todo.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
