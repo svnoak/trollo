@@ -1,6 +1,7 @@
 package com.todo.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Task {
@@ -12,21 +13,24 @@ public class Task {
     private String name;
     private String description;
 
-    private int taskOrder;
+    @Column(name = "task_order")
+    private int position;
 
     @ManyToOne
+    @NotNull
+    @JoinColumn(name = "lane_id")
     private Lane lane;
 
     public int getId() {
         return id;
     }
 
-    public int getLaneId() {
-        return lane.getId();
+    public Lane getLane() {
+        return lane;
     }
 
-    public int getTaskOrder() {
-        return taskOrder;
+    public int getPosition() {
+        return position;
     }
 
 
@@ -38,8 +42,8 @@ public class Task {
         return description;
     }
 
-    public void setTaskOrder(int taskOrder) {
-        this.taskOrder = taskOrder;
+    public void setPosition(int position) {
+        this.position = position;
     }
 
     public void setName(String name) {

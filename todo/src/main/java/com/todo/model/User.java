@@ -3,6 +3,7 @@ package com.todo.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +23,7 @@ public class User {
     @Column(unique = true)
     private String email;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_workspace",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "workspace_id")
-    )
+    @ManyToMany(mappedBy = "users")
     private List<Workspace> workspaces = new ArrayList<Workspace>();
 
     public int getId() {
@@ -58,6 +54,13 @@ public class User {
             throw new IllegalArgumentException("Name cannot be null or empty");
         }
         this.name = name;
+    }
+
+    public void setPassword(String password) {
+        if(password == null || password.isEmpty()){
+            throw new IllegalArgumentException("Password cannot be null or empty");
+        }
+
     }
 
     public List<Workspace> getWorkspaces() {

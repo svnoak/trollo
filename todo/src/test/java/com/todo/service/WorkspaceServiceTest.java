@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ActiveProfiles("test")
 @SpringBootTest(classes = ServerApplication.class)
@@ -25,61 +25,42 @@ public class WorkspaceServiceTest {
 
     @Autowired
     private LaneService laneService;
-    @Test
-    void createWorkspace() {
-        User user = userService.createUser("Test User", "em@ail.com");
-        assertDoesNotThrow(() -> workspaceService.createWorkspace("Test Workspace", user));
-    }
-
-    @Test
-    void createWorkspaceWithoutUser(){
-        assertThrows(IllegalArgumentException.class, () -> workspaceService.createWorkspace("Test Workspace", null));
-    }
-
-    @Test
-    void deleteWorkspace() {
-        User user = userService.createUser("Test User", "em@ail.com");
-        Workspace workspace = workspaceService.createWorkspace("Test Workspace", user);
-        assertDoesNotThrow(() -> workspaceService.deleteWorkspace(workspace));
-    }
 
     @Test
     void getWorkspaceById() {
-        User user = userService.createUser("Test User", "em@ail.com");
-        int workspaceId = workspaceService.createWorkspace("Test Workspace", user).getId();
+        User user = userService.createUser("Test User", "em@ail.com", "password");
+        int workspaceId = userService.createWorkspace("Test Workspace", user).getId();
         assertDoesNotThrow(() -> workspaceService.getWorkspaceById(workspaceId));
     }
 
     @Test
-    void updateWorkspace() {
-        User user = userService.createUser("Test User", "ema@il.com");
-        Workspace workspace = workspaceService.createWorkspace("Test Workspace", user);
-        workspace.setName("Test Workspace 2");
-        assertDoesNotThrow(() -> workspaceService.updateWorkspace(workspace));
+    void updateWorkspaceName() {
+        User user = userService.createUser("Test User", "ema@il.com", "password");
+        Workspace workspace = userService.createWorkspace("Test Workspace", user);
+        assertDoesNotThrow(() -> workspaceService.updateName(workspace, "New name"));
     }
 
     @Test
-    void addLaneToWorkspace() {
-        User user = userService.createUser("Test User", "email@something.com");
-        Workspace workspace = workspaceService.createWorkspace("Test Workspace", user);
-        Lane lane = laneService.createLane(workspace);
-        assertDoesNotThrow(() -> workspaceService.addLaneToWorkspace(workspace, lane));
+    void addWorkspaceToUser() {
+        User user = userService.createUser("Test User", "email@something.com", "password");
+        Workspace workspace = userService.createWorkspace("Test Workspace", user);
+        User newUser = userService.createUser("New User", "new@email.com", "password");
+        assertDoesNotThrow(() -> userService.addWorkspaceToUser(newUser, workspace));
     }
 
     @Test
-    void removeLaneFromWorkspace() {
-        User user = userService.createUser("Test User", "email@something.com");
-        Workspace workspace = workspaceService.createWorkspace("Test Workspace", user);
-        Lane lane = laneService.createLane(workspace);
-        assertDoesNotThrow(() -> workspaceService.addLaneToWorkspace(workspace, lane));
-        assertDoesNotThrow(() -> workspaceService.removeLaneFromWorkspace(workspace, lane));
-    }
-
-    @Test
-    void addUserToWorkspace() {
-        User user = userService.createUser("Test User", "email@something.com");
-        Workspace workspace = workspaceService.createWorkspace("Test Workspace", user);
-        User newUser = userService.createUser("New User", "new@email.com");
-        assertDoesNotThrow(() -> workspaceService.addUserToWorkspace(workspace, newUser));
+    void updateLanePosition() {
+        User user = userService.createUser("Test User", "email@something.com", "password");
+        Workspace workspace = userService.createWorkspace("Test Workspace", user);
+        Lane lane1 = workspaceService.createLane("Test Lane 1", workspace);
+        Lane lane2 = workspaceService.createLane("Test Lane 2", workspace);
+        Lane lane3 = workspaceService.createLane("Test Lane 3", workspace);
+        assertEquals(0, lane1.getPosition());
+        assertEquals(1, lane2.getPosition());
+        assertEquals(2, lane3.getPosition());
+        assertDoesNotThrow(() -> workspaceService.updateLanePosition(lane1, 2));
+        assertEquals(2, lane1.getPosition());
+        assertEquals(0, lane2.getPosition());
+        assertEquals(1, lane3.getPosition());
     }
 }

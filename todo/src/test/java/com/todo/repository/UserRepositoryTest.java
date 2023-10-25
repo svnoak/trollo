@@ -4,7 +4,9 @@ import com.todo.model.User;
 import com.todo.model.Workspace;
 import com.todo.server.ServerApplication;
 import jakarta.transaction.Transactional;
+import org.aspectj.lang.annotation.After;
 import org.hibernate.jdbc.Work;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,7 @@ public class UserRepositoryTest {
         User user1 = new User();
         user1.setName("Test User 1");
         user1.setEmail("user@email.com");
+        user1.setPassword("password");
         assertNotNull(user1);
         userId1 = userRepository.save(user1).getId();
 
@@ -42,11 +45,17 @@ public class UserRepositoryTest {
         userId2 = userRepository.save(user2).getId();
     }
 
+    @AfterEach
+    void cleanUp(){
+        userRepository.deleteAll();
+    }
+
     @Test
     void createUser() {
         User user = new User();
         user.setName("Test User");
         user.setEmail("user2@email.com");
+        user.setPassword("password");
         assertDoesNotThrow(() -> userRepository.save(user));
     }
 
@@ -77,12 +86,6 @@ public class UserRepositoryTest {
         user.setName("Updated User");
         userRepository.save(user);
         assertEquals("Updated User", Objects.requireNonNull(userRepository.findById(userId1).orElse(null)).getName());
-    }
-
-    @Test
-    void findAllUsers(){
-        List<User> users = userRepository.findAll();
-        assertEquals(2, users.size());
     }
 
 }

@@ -3,6 +3,7 @@ package com.todo.service;
 import com.todo.model.Lane;
 import com.todo.model.User;
 import com.todo.model.Workspace;
+import com.todo.repository.LaneRepository;
 import com.todo.repository.UserRepository;
 import com.todo.repository.WorkspaceRepository;
 import org.hibernate.jdbc.Work;
@@ -13,52 +14,51 @@ import org.springframework.stereotype.Service;
 public class WorkspaceService {
 
     private final WorkspaceRepository workspaceRepository;
+    private final LaneRepository laneRepository;
     @Autowired
-    public WorkspaceService(WorkspaceRepository workspaceRepository) {
+    public WorkspaceService(WorkspaceRepository workspaceRepository, LaneRepository laneRepository) {
         this.workspaceRepository = workspaceRepository;
-    }
-
-    public Workspace createWorkspace(String name, User user){
-        if(name == null || name.isEmpty()){
-            name = "Workspace";
-        }
-        if (user == null){
-            throw new IllegalArgumentException("User cannot be null");
-        }
-
-        Workspace workspace = new Workspace();
-        workspace.setName(name);
-        workspace.getUsers().add(user);
-
-        return workspaceRepository.save(workspace);
-    }
-
-    public void deleteWorkspace(Workspace workspace){
-        workspaceRepository.delete(workspace);
+        this.laneRepository = laneRepository;
     }
 
     public Workspace getWorkspaceById(int id){
         return workspaceRepository.findById(id).orElse(null);
     }
 
-    public Workspace updateWorkspace(Workspace workspace){
-        return workspaceRepository.save(workspace);
-    }
+    public Lane createLane(String name, Workspace workspace){
+        Lane lane = new Lane();
+        lane.setName(name);
+        lane.setWorkspace(workspace);
+        lane.setPosition(workspace.getLanes().size());
+        laneRepository.save(lane);
 
-    public Lane addLaneToWorkspace(Workspace workspace, Lane lane){
         workspace.getLanes().add(lane);
         workspaceRepository.save(workspace);
         return lane;
     }
 
-    public void removeLaneFromWorkspace(Workspace workspace, Lane lane){
+    public void deleteLane(Lane lane){
+        Workspace workspace = lane.getWorkspace();
         workspace.getLanes().remove(lane);
         workspaceRepository.save(workspace);
+        laneRepository.delete(lane);
     }
 
-    public Workspace addUserToWorkspace(Workspace workspace, User user){
-        workspace.getUsers().add(user);
+    public Workspace updateLanePosition(Lane lane, int position){
+        Workspace workspace = lane.getWorkspace();
+        workspace.getLanes().remove(lane);
+        lane.setPosition(position);
+        workspace.getLanes().add(position, lane);
+
+        for(int i = 0; i < workspace.getLanes().size(); i++){
+            workspace.getLanes().get(i).setPosition(i);
+        }
+
+        return workspaceRepository.save(workspace);
+    }
+
+    public void updateName(Workspace workspace, String name) {
+        workspace.setName(name);
         workspaceRepository.save(workspace);
-        return workspace;
     }
 }

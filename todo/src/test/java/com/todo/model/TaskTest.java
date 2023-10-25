@@ -30,22 +30,22 @@ class TaskTest {
 
         Lane lane = new Lane();
         ReflectionTestUtils.setField(lane, "id", 1);
-        lane.setLaneOrder(1);
+        lane.setPosition(1);
 
         workspace.setLanes(List.of(lane));
 
         lane.setTasks(List.of(task));
         task.setLane(lane);
 
-        assertEquals(1, task.getLaneId());
+        assertEquals(1, task.getLane().getId());
     }
 
     @Test
     void getTaskOrder() {
         Task task = new Task();
         assertNotNull(task);
-        task.setTaskOrder(1);
-        assertEquals(1, task.getTaskOrder());
+        task.setPosition(1);
+        assertEquals(1, task.getPosition());
     }
 
     @Test
@@ -68,7 +68,7 @@ class TaskTest {
     void setTaskOrder() {
         Task task = new Task();
         assertNotNull(task);
-        assertDoesNotThrow(() -> task.setTaskOrder(1));
+        assertDoesNotThrow(() -> task.setPosition(1));
     }
 
     @Test

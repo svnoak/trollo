@@ -34,31 +34,31 @@ public class TaskServiceTest {
     private Lane lane;
     @BeforeEach
     void setUp(){
-        user = userService.createUser("Test User", "e@mail.com");
-        workspace = workspaceService.createWorkspace("Workspace",user);
-        lane = laneService.createLane(workspace);
+        user = userService.createUser("Test User", "e@mail.com", "password");
+        workspace = userService.createWorkspace("Test Workspace", user);
+        lane = workspaceService.createLane("Lane",workspace);
     }
     @Test
     void createTask() {
-        assertDoesNotThrow(() -> taskService.createTask("Test Task", "Test Description",lane, lane.getTasks().size()));
+        assertDoesNotThrow(() -> laneService.createTask("Test Task", "Test Description",lane.getTasks().size(), lane));
     }
 
     @Test
     void updateTask() {
-        Task task = taskService.createTask("Test Task", "Test Description",lane, lane.getTasks().size());
+        Task task = laneService.createTask("Test Task", "Test Description", lane.getTasks().size(), lane);
         task.setName("Test Task 2");
         assertDoesNotThrow(() -> taskService.updateTask(task));
     }
 
     @Test
     void deleteTask() {
-        Task task = taskService.createTask("Test Task", "Test Description",lane, lane.getTasks().size());
-        assertDoesNotThrow(() -> taskService.deleteTask(task));
+        Task task = laneService.createTask("Test Task", "Test Description", lane.getTasks().size(), lane);
+        assertDoesNotThrow(() -> laneService.deleteTask(task));
     }
 
     @Test
     void getTaskById() {
-        Task task = taskService.createTask("Test Task", "Test Description",lane, lane.getTasks().size());
+        Task task = laneService.createTask("Test Task", "Test Description",lane.getTasks().size(), lane);
         assertDoesNotThrow(() -> taskService.getTaskById(task.getId()));
     }
 }

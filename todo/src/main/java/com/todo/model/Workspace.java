@@ -13,10 +13,15 @@ public class Workspace {
     private int id;
     private String name;
 
-    @OneToMany
+    @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Lane> lanes = new ArrayList<Lane>();
 
-    @ManyToMany(mappedBy = "workspaces")
+    @ManyToMany
+    @JoinTable(
+            name = "user_workspace",
+            joinColumns = @JoinColumn(name = "workspace_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
     private List<User> users = new ArrayList<User>();
 
     public int getId() {

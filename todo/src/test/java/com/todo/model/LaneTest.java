@@ -37,8 +37,8 @@ class LaneTest {
     void getLaneOrder() {
         Lane lane = new Lane();
         assertNotNull(lane);
-        lane.setLaneOrder(1);
-        assertEquals(1, lane.getLaneOrder());
+        lane.setPosition(1);
+        assertEquals(1, lane.getPosition());
     }
 
     @Test
@@ -57,14 +57,14 @@ class LaneTest {
     void setLaneOrder() {
         Lane lane = new Lane();
         assertNotNull(lane);
-        assertDoesNotThrow(() -> lane.setLaneOrder(1));
+        assertDoesNotThrow(() -> lane.setPosition(1));
     }
 
     @Test
     void setLaneOrderNegative() {
         Lane lane = new Lane();
         assertNotNull(lane);
-        assertThrows(IllegalArgumentException.class, () -> lane.setLaneOrder(-1));
+        assertThrows(IllegalArgumentException.class, () -> lane.setPosition(-1));
     }
 
     @Test
