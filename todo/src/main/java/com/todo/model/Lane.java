@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
+import org.hibernate.jdbc.Work;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +33,6 @@ public class Lane {
         return id;
     }
 
-    public int getWorkspaceId() {
-        return workspace.getId();
-    }
-
     public int getLaneOrder() {
         return laneOrder;
     }
@@ -60,5 +57,9 @@ public class Lane {
             throw new IllegalArgumentException("Workspace must not be null");
         }
         this.workspace = workspace;
+    }
+
+    public Workspace getWorkspace() {
+        return this.workspace;
     }
 }

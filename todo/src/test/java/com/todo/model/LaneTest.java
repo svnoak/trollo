@@ -30,7 +30,7 @@ class LaneTest {
 
         lane.setWorkspace(workspace);
 
-        assertEquals(1, lane.getWorkspaceId());
+        assertEquals(1, lane.getWorkspace().getId());
     }
 
     @Test
