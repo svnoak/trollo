@@ -2,18 +2,14 @@ package com.todo.service;
 
 import com.todo.model.Lane;
 import com.todo.model.Task;
-import com.todo.model.User;
 import com.todo.model.Workspace;
 import com.todo.server.ServerApplication;
 import jakarta.transaction.Transactional;
-import org.hibernate.jdbc.Work;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,15 +22,11 @@ class LaneServiceTest {
     private LaneService laneService;
     @Autowired
     private WorkspaceService workspaceService;
-    @Autowired
-    private UserService userService;
 
-    private User user;
     private Workspace workspace;
     @BeforeEach
     void setUp(){
-        user = userService.createUser("Test User", "email@email.com", "password");
-        workspace = userService.createWorkspace("Test Workspace", user);
+        workspace = workspaceService.createWorkspace("Test Workspace");
     }
 
     @Test

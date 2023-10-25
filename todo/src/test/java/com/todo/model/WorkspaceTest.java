@@ -39,27 +39,6 @@ class WorkspaceTest {
     }
 
     @Test
-    void getUsers() {
-        Workspace workspace = new Workspace();
-        assertNotNull(workspace);
-
-        User user = new User();
-        user.setName("user");
-
-        workspace.setUsers(List.of(user));
-        assertEquals(1, workspace.getUsers().size());
-    }
-
-    @Test
-    void setUsers(){
-        Workspace workspace = new Workspace();
-        assertNotNull(workspace);
-        User user = new User();
-        user.setName("user");
-        assertDoesNotThrow(() -> workspace.setUsers(List.of(user)));
-    }
-
-    @Test
     void setName() {
         Workspace workspace = new Workspace();
         assertNotNull(workspace);

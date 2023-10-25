@@ -16,13 +16,6 @@ public class Workspace {
     @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Lane> lanes = new ArrayList<Lane>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_workspace",
-            joinColumns = @JoinColumn(name = "workspace_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private List<User> users = new ArrayList<User>();
 
     public int getId() {
         return id;
@@ -36,10 +29,6 @@ public class Workspace {
         return lanes;
     }
 
-    public List<User> getUsers() {
-        return users;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -48,7 +37,4 @@ public class Workspace {
         this.lanes = lanes;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
 }

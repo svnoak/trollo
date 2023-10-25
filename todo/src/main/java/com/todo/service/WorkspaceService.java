@@ -1,12 +1,9 @@
 package com.todo.service;
 
 import com.todo.model.Lane;
-import com.todo.model.User;
 import com.todo.model.Workspace;
 import com.todo.repository.LaneRepository;
-import com.todo.repository.UserRepository;
 import com.todo.repository.WorkspaceRepository;
-import org.hibernate.jdbc.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +20,18 @@ public class WorkspaceService {
 
     public Workspace getWorkspaceById(int id){
         return workspaceRepository.findById(id).orElse(null);
+    }
+
+    public Workspace createWorkspace(String name){
+        Workspace workspace = new Workspace();
+        workspace.setName(name);
+        workspaceRepository.save(workspace);
+        return workspace;
+    }
+
+    public Workspace deleteWorkspace(Workspace workspace){
+        workspaceRepository.delete(workspace);
+        return workspace;
     }
 
     public Lane createLane(String name, Workspace workspace){

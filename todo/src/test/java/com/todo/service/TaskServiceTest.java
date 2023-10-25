@@ -2,7 +2,6 @@ package com.todo.service;
 
 import com.todo.model.Lane;
 import com.todo.model.Task;
-import com.todo.model.User;
 import com.todo.model.Workspace;
 import com.todo.server.ServerApplication;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,16 +25,11 @@ public class TaskServiceTest {
     @Autowired
     private WorkspaceService workspaceService;
 
-    @Autowired
-    private UserService userService;
-
-    private User user;
     private Workspace workspace;
     private Lane lane;
     @BeforeEach
     void setUp(){
-        user = userService.createUser("Test User", "e@mail.com", "password");
-        workspace = userService.createWorkspace("Test Workspace", user);
+        workspace = workspaceService.createWorkspace("Test Workspace");
         lane = workspaceService.createLane("Lane",workspace);
     }
     @Test

@@ -1,6 +1,8 @@
 package com.todo.repository;
 
+import com.todo.model.Lane;
 import com.todo.model.Task;
+import com.todo.model.Workspace;
 import com.todo.server.ServerApplication;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
@@ -18,21 +20,45 @@ public class TaskRepositoryTest {
     @Autowired
     private TaskRepository taskRepository;
 
+    @Autowired
+    private LaneRepository laneRepository;
+
+    @Autowired
+    private WorkspaceRepository workspaceRepository;
     @Test
     void createTask(){
-        assertDoesNotThrow(() -> taskRepository.save(new Task()));
+        Workspace workspace = new Workspace();
+        workspaceRepository.save(workspace);
+        Lane lane = new Lane();
+        lane.setWorkspace(workspace);
+        laneRepository.save(lane);
+        Task task = new Task();
+        task.setLane(lane);
+        assertDoesNotThrow(() -> taskRepository.save(task));
     }
 
     @Test
     void getTaskById(){
+        Workspace workspace = new Workspace();
+        workspaceRepository.save(workspace);
+        Lane lane = new Lane();
+        lane.setWorkspace(workspace);
+        laneRepository.save(lane);
         Task task = new Task();
+        task.setLane(lane);
         taskRepository.save(task);
         assertDoesNotThrow(() -> taskRepository.findById(task.getId()));
     }
 
     @Test
     void deleteTask(){
+        Workspace workspace = new Workspace();
+        workspaceRepository.save(workspace);
+        Lane lane = new Lane();
+        lane.setWorkspace(workspace);
+        laneRepository.save(lane);
         Task task = new Task();
+        task.setLane(lane);
         taskRepository.save(task);
         assertDoesNotThrow(() -> taskRepository.delete(task));
     }

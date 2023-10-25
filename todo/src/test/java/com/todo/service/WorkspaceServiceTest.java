@@ -1,10 +1,8 @@
 package com.todo.service;
 
 import com.todo.model.Lane;
-import com.todo.model.User;
 import com.todo.model.Workspace;
 import com.todo.server.ServerApplication;
-import org.hibernate.jdbc.Work;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,37 +19,23 @@ public class WorkspaceServiceTest {
     private WorkspaceService workspaceService;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private LaneService laneService;
 
     @Test
     void getWorkspaceById() {
-        User user = userService.createUser("Test User", "em@ail.com", "password");
-        int workspaceId = userService.createWorkspace("Test Workspace", user).getId();
+        int workspaceId = workspaceService.createWorkspace("Test Workspace").getId();
         assertDoesNotThrow(() -> workspaceService.getWorkspaceById(workspaceId));
     }
 
     @Test
     void updateWorkspaceName() {
-        User user = userService.createUser("Test User", "ema@il.com", "password");
-        Workspace workspace = userService.createWorkspace("Test Workspace", user);
+        Workspace workspace = workspaceService.createWorkspace("Test Workspace");
         assertDoesNotThrow(() -> workspaceService.updateName(workspace, "New name"));
     }
 
     @Test
-    void addWorkspaceToUser() {
-        User user = userService.createUser("Test User", "email@something.com", "password");
-        Workspace workspace = userService.createWorkspace("Test Workspace", user);
-        User newUser = userService.createUser("New User", "new@email.com", "password");
-        assertDoesNotThrow(() -> userService.addWorkspaceToUser(newUser, workspace));
-    }
-
-    @Test
     void updateLanePosition() {
-        User user = userService.createUser("Test User", "email@something.com", "password");
-        Workspace workspace = userService.createWorkspace("Test Workspace", user);
+        Workspace workspace = workspaceService.createWorkspace("Test Workspace");
         Lane lane1 = workspaceService.createLane("Test Lane 1", workspace);
         Lane lane2 = workspaceService.createLane("Test Lane 2", workspace);
         Lane lane3 = workspaceService.createLane("Test Lane 3", workspace);
