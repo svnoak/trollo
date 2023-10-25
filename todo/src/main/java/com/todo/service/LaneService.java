@@ -19,6 +19,7 @@ public class LaneService {
     public Lane createLane(Workspace workspace){
         Lane lane = new Lane();
         lane.setWorkspace(workspace);
+        lane.setLaneOrder(workspace.getLanes().size());
         return laneRepository.save(lane);
     }
 

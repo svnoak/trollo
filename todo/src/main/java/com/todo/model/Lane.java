@@ -16,9 +16,7 @@ public class Lane {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotBlank
     @NotNull
-    @NotEmpty
     @PositiveOrZero
     private int laneOrder;
 
@@ -28,8 +26,6 @@ public class Lane {
 
     @ManyToOne
     @NotNull
-    @NotBlank
-    @NotEmpty
     private Workspace workspace;
 
     public int getId() {

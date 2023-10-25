@@ -19,6 +19,13 @@ public class WorkspaceService {
     }
 
     public Workspace createWorkspace(String name, User user){
+        if(name == null || name.isEmpty()){
+            name = "Workspace";
+        }
+        if (user == null){
+            throw new IllegalArgumentException("User cannot be null");
+        }
+
         Workspace workspace = new Workspace();
         workspace.setName(name);
         workspace.getUsers().add(user);
