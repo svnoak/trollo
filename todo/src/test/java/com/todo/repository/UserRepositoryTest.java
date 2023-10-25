@@ -1,14 +1,18 @@
 package com.todo.repository;
 
 import com.todo.model.User;
+import com.todo.model.Workspace;
 import com.todo.server.ServerApplication;
 import jakarta.transaction.Transactional;
+import org.hibernate.jdbc.Work;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,9 +24,11 @@ public class UserRepositoryTest {
     private int userId1;
     private int userId2;
 
-
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private WorkspaceRepository workspaceRepository;
 
     @BeforeEach
     void setUp() {
@@ -55,8 +61,45 @@ public class UserRepositoryTest {
 
     @Test
     void testFindUserByEmail() {
-        User user = userRepository.findByEmail("user1@email.com").orElse(null);
+        User user = userRepository.findByEmail("user1@email.com");
         assertNotNull(user);
+    }
+
+    @Test
+    void setUserWorkspaces() {
+        User user = userRepository.findById(userId1).orElse(null);
+        assertNotNull(user);
+
+        Workspace workspace = new Workspace();
+        workspace.setName("Test Workspace");
+        workspaceRepository.save(workspace);
+
+        user.setWorkspaces(List.of(workspace));
+        assertNotNull(user.getWorkspaces());
+        assertEquals(1, user.getWorkspaces().size());
+    }
+
+    @Test
+    void deleteUser() {
+        User user = userRepository.findById(userId1).orElse(null);
+        assertNotNull(user);
+        userRepository.delete(user);
+        assertNull(userRepository.findById(userId1).orElse(null));
+    }
+
+    @Test
+    void updateUser(){
+        User user = userRepository.findById(userId1).orElse(null);
+        assertNotNull(user);
+        user.setName("Updated User");
+        userRepository.save(user);
+        assertEquals("Updated User", Objects.requireNonNull(userRepository.findById(userId1).orElse(null)).getName());
+    }
+
+    @Test
+    void findAllUsers(){
+        List<User> users = userRepository.findAll();
+        assertEquals(2, users.size());
     }
 
 }
