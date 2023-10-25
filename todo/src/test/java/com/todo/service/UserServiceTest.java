@@ -4,17 +4,22 @@ import com.todo.model.User;
 import com.todo.model.Workspace;
 import com.todo.server.ServerApplication;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.Before;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @SpringBootTest(classes = ServerApplication.class)
 @Transactional
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UserServiceTest {
 
     @Autowired
@@ -23,12 +28,10 @@ class UserServiceTest {
     @Autowired
     private WorkspaceService workspaceService;
 
-    private User user;
-    @BeforeEach
-    void setUp(){
-        String name = "Test User1";
-        String email = "user1@email.com";
-        user = userService.createUser(name, email);
+    @Test
+    void getUserByEmail() {
+        User user = userService.createUser("Test User", "email@me.com");
+        assertNotNull(userService.getUserByEmail(user.getEmail()));
     }
 
     @Test
@@ -60,27 +63,23 @@ class UserServiceTest {
     }
 
     @Test
-    void getUserByEmail() {
-        assertNotNull(userService.getUserByEmail(user.getEmail()));
-    }
-
-    @Test
     void addWorkspaceToUser() {
+        User user = userService.createUser("Test User1", "user@email.com");
         Workspace workspace = workspaceService.createWorkspace("Test Workspace", user);
         assertDoesNotThrow(() -> userService.addWorkspaceToUser(user, workspace));
     }
 
     @Test
     void deleteUser() {
-        User user = userService.getUserById(this.user.getId());
-        assertNotNull(user);
+        User user = userService.createUser("Delete User", "delete@me.com");
         assertDoesNotThrow(() -> userService.deleteUser(user));
-        User deletedUser = userService.getUserById(this.user.getId());
+        User deletedUser = userService.getUserById(user.getId());
         assertNull(deletedUser);
     }
 
     @Test
     void removeWorkspaceFromUser() {
+        User user = userService.createUser("Workspace User", "workspace@email.com");
         Workspace workspace = workspaceService.createWorkspace("Test Workspace", user);
         assertDoesNotThrow(() -> userService.addWorkspaceToUser(user, workspace));
         assertDoesNotThrow(() -> userService.removeWorkspaceFromUser(user, workspace));
@@ -88,6 +87,7 @@ class UserServiceTest {
 
     @Test
     void updateUser(){
+        User user = userService.createUser("Test User", "update@email.com");
         user.setName("Test User 2");
         assertDoesNotThrow(() -> userService.updateUser(user));
         User updatedUser = userService.getUserById(user.getId());
@@ -96,6 +96,7 @@ class UserServiceTest {
 
     @Test
     void getUserById(){
+        User user = userService.createUser("Test User", "id@email.com");
         assertNotNull(userService.getUserById(user.getId()));
     }
 }
