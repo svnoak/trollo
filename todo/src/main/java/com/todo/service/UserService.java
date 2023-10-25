@@ -13,12 +13,10 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final WorkspaceRepository workspaceRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, WorkspaceRepository workspaceRepository) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.workspaceRepository = workspaceRepository;
     }
 
     public User createUser(String name, String email) {
