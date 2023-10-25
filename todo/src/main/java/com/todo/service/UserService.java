@@ -45,4 +45,12 @@ public class UserService {
         user.getWorkspaces().remove(workspace);
         userRepository.save(user);
     }
+
+    public User updateUser(User user) {
+        return userRepository.save(user);
+    }
+
+    public User getUserById(int id) {
+        return userRepository.findById(id).orElse(null);
+    }
 }
