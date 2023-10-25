@@ -43,7 +43,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    void testCreateUser() {
+    void createUser() {
         User user = new User();
         user.setName("Test User");
         user.setEmail("user2@email.com");
@@ -51,13 +51,13 @@ public class UserRepositoryTest {
     }
 
     @Test
-    void testFindUserById() {
+    void findUserById() {
         User user = userRepository.findById(userId1).orElse(null);
         assertNotNull(user);
     }
 
     @Test
-    void testFindUserByEmail() {
+    void findUserByEmail() {
         User user = userRepository.findByEmail("user1@email.com");
         assertNotNull(user);
     }
