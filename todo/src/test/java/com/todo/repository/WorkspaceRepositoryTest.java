@@ -41,4 +41,12 @@ class WorkspaceRepositoryTest {
         workspace.setName("Test Workspace 2");
         assertDoesNotThrow(() -> workspaceRepository.save(workspace));
     }
+
+    @Test
+    void findWorkspaceById() {
+        Workspace workspace = new Workspace();
+        workspace.setName("Test Workspace");
+        int workspaceId = workspaceRepository.save(workspace).getId();
+        assertNotNull(workspaceRepository.findById(workspaceId));
+    }
 }
