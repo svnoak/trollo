@@ -1,6 +1,7 @@
 package com.todo.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.List;
 
@@ -11,8 +12,7 @@ public class Lane {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String name;
-
+    @NotBlank
     private int laneOrder;
 
     @OneToMany(mappedBy = "lane")
@@ -33,19 +33,16 @@ public class Lane {
         return laneOrder;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setWorkspace(Workspace workspace) {
-        this.workspace = workspace;
+    public List<Task> getTasks() {
+        return tasks;
     }
 
     public void setLaneOrder(int laneOrder) {
         this.laneOrder = laneOrder;
     }
 
-    public void setName(String name) {
-        this.name = name;
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
     }
 }

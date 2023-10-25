@@ -15,9 +15,6 @@ public class Workspace {
     @OneToMany(mappedBy = "workspace")
     private List<Lane> lanes;
 
-    @OneToMany(mappedBy = "workspace")
-    private List<Task> tasks;
-
     @ManyToMany
     private List<User> users;
 
@@ -29,16 +26,12 @@ public class Workspace {
         return name;
     }
 
-    public List<Task> getTasks() {
-        return tasks;
-    }
-
     public List<Lane> getLanes() {
         return lanes;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public List<User> getUsers() {
+        return users;
     }
 
     public void setName(String name) {
@@ -49,7 +42,7 @@ public class Workspace {
         this.lanes = lanes;
     }
 
-    public void setTasks(List<Task> tasks) {
-        this.tasks = tasks;
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 }
