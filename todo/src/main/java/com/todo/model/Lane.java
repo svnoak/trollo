@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,7 +24,7 @@ public class Lane {
 
     @OneToMany(mappedBy = "lane")
     @NotNull
-    private List<Task> tasks;
+    private List<Task> tasks = new ArrayList<Task>();
 
     @ManyToOne
     @NotNull

@@ -2,6 +2,7 @@ package com.todo.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,10 +14,10 @@ public class Workspace {
     private String name;
 
     @OneToMany
-    private List<Lane> lanes;
+    private List<Lane> lanes = new ArrayList<Lane>();
 
     @ManyToMany(mappedBy = "workspaces")
-    private List<User> users;
+    private List<User> users = new ArrayList<User>();
 
     public int getId() {
         return id;

@@ -3,11 +3,9 @@ package com.todo.service;
 import com.todo.model.User;
 import com.todo.model.Workspace;
 import com.todo.repository.UserRepository;
-import com.todo.repository.WorkspaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 public class UserService {

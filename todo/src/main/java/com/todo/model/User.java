@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -27,7 +28,7 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "workspace_id")
     )
-    private List<Workspace> workspaces;
+    private List<Workspace> workspaces = new ArrayList<Workspace>();
 
     public int getId() {
         return id;
