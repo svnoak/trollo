@@ -39,6 +39,27 @@ class UserServiceTest {
     }
 
     @Test
+    void createUserNoEmail(){
+        String name = "Test User";
+        String email = "";
+        assertThrows(IllegalArgumentException.class, () -> userService.createUser(name, email));
+    }
+
+    @Test
+    void createUserNoName() {
+        String name = "";
+        String email = "user@email.com";
+        assertThrows(IllegalArgumentException.class, () -> userService.createUser(name, email));
+    }
+
+    @Test
+    void createUserIllegalEmail() {
+        String name = "Test User";
+        String email = "useremail.com";
+        assertThrows(IllegalArgumentException.class, () -> userService.createUser(name, email));
+    }
+
+    @Test
     void getUserByEmail() {
         assertNotNull(userService.getUserByEmail(user.getEmail()));
     }
@@ -51,7 +72,11 @@ class UserServiceTest {
 
     @Test
     void deleteUser() {
+        User user = userService.getUserById(this.user.getId());
+        assertNotNull(user);
         assertDoesNotThrow(() -> userService.deleteUser(user));
+        User deletedUser = userService.getUserById(this.user.getId());
+        assertNull(deletedUser);
     }
 
     @Test
@@ -65,6 +90,8 @@ class UserServiceTest {
     void updateUser(){
         user.setName("Test User 2");
         assertDoesNotThrow(() -> userService.updateUser(user));
+        User updatedUser = userService.getUserById(user.getId());
+        assertEquals("Test User 2", updatedUser.getName());
     }
 
     @Test
