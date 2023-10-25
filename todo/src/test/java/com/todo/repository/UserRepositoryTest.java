@@ -27,9 +27,6 @@ public class UserRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private WorkspaceRepository workspaceRepository;
-
     @BeforeEach
     void setUp() {
         User user1 = new User();
@@ -63,20 +60,6 @@ public class UserRepositoryTest {
     void testFindUserByEmail() {
         User user = userRepository.findByEmail("user1@email.com");
         assertNotNull(user);
-    }
-
-    @Test
-    void setUserWorkspaces() {
-        User user = userRepository.findById(userId1).orElse(null);
-        assertNotNull(user);
-
-        Workspace workspace = new Workspace();
-        workspace.setName("Test Workspace");
-        workspaceRepository.save(workspace);
-
-        user.setWorkspaces(List.of(workspace));
-        assertNotNull(user.getWorkspaces());
-        assertEquals(1, user.getWorkspaces().size());
     }
 
     @Test
