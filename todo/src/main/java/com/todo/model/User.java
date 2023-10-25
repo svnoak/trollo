@@ -8,6 +8,7 @@ import java.util.List;
 
 
 @Entity
+@Table(name = "\"user\"")
 public class User {
 
     @Id
@@ -17,9 +18,10 @@ public class User {
     @NotBlank
     private String name;
     @Email
+    @Column(unique = true)
     private String email;
 
-    @ManyToMany(mappedBy = "users")
+    @ManyToMany
     @JoinTable(
             name = "user_workspace",
             joinColumns = @JoinColumn(name = "user_id"),

@@ -90,8 +90,10 @@ public class UserTest {
 
         Workspace workspace = new Workspace();
         List<Workspace> workspaceList = List.of(workspace);
+        workspace.setUsers(List.of(user));
 
         assertDoesNotThrow(() -> user.setWorkspaces(workspaceList));
+        assertEquals(1, workspace.getUsers().size());
     }
 
     @Test

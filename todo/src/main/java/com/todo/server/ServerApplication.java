@@ -7,9 +7,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@ComponentScan(basePackages = "com.agenda")
-@EntityScan(basePackages = "com.agenda.model")
-@EnableJpaRepositories(basePackages = "com.agenda.repository")
+@ComponentScan(basePackages = "com.todo")
+@EntityScan("com.todo.model")
+@EnableJpaRepositories("com.todo.repository")
 public class ServerApplication {
 
 	public static void main(String[] args) {

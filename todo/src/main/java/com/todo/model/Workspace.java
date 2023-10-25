@@ -12,10 +12,10 @@ public class Workspace {
     private int id;
     private String name;
 
-    @OneToMany(mappedBy = "workspace")
+    @OneToMany
     private List<Lane> lanes;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "workspaces")
     private List<User> users;
 
     public int getId() {
