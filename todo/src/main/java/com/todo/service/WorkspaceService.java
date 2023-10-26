@@ -7,6 +7,8 @@ import com.todo.repository.WorkspaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class WorkspaceService {
 
@@ -25,6 +27,12 @@ public class WorkspaceService {
     public Workspace createWorkspace(String name){
         Workspace workspace = new Workspace();
         workspace.setName(name);
+        Lane lane = new Lane();
+        lane.setName("To Do");
+        lane.setWorkspace(workspace);
+        lane.setPosition(0);
+        laneRepository.save(lane);
+        workspace.getLanes().add(lane);
         workspaceRepository.save(workspace);
         return workspace;
     }
@@ -46,11 +54,20 @@ public class WorkspaceService {
         return lane;
     }
 
-    public void deleteLane(Lane lane){
+    public Workspace deleteLane(Lane lane){
         Workspace workspace = lane.getWorkspace();
         workspace.getLanes().remove(lane);
-        workspaceRepository.save(workspace);
-        laneRepository.delete(lane);
+        try {
+            workspaceRepository.save(workspace);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        try {
+            laneRepository.delete(lane);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return workspace;
     }
 
     public Workspace updateLanePosition(Lane lane, int position){
@@ -66,8 +83,13 @@ public class WorkspaceService {
         return workspaceRepository.save(workspace);
     }
 
-    public void updateName(Workspace workspace, String name) {
+    public Workspace updateName(Workspace workspace, String name) {
         workspace.setName(name);
         workspaceRepository.save(workspace);
+        return workspace;
+    }
+
+    public List<Workspace> getAllWorkspaces() {
+        return workspaceRepository.findAll();
     }
 }

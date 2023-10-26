@@ -62,4 +62,14 @@ public class LaneService {
         }
     }
 
+    public List<Lane> getAllLanes() {
+        return laneRepository.findAll();
+    }
+
+    public Lane updateLaneName(Lane updatedLane) {
+        Lane lane = laneRepository.findById(updatedLane.getId()).orElse(null);
+        if (lane == null) throw new AssertionError();
+        lane.setName(updatedLane.getName());
+        return laneRepository.save(lane);
+    }
 }
