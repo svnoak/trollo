@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/lanes")
@@ -31,23 +30,15 @@ public class LaneController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Lane> getLaneById(@PathVariable int id) {
-        Lane lane = laneService.getLaneById(id);
-        if(lane == null){
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(lane);
+        return ResponseEntity.ofNullable(laneService.getLaneById(id));
     }
 
     @PostMapping
     public ResponseEntity<Lane> createLane(@RequestBody Lane lane) {
-        if(lane.getWorkspace() == null){
-            return ResponseEntity.badRequest().build();
-        }
         try {
             Lane createdLane = workspaceService.createLane(lane.getName(), lane.getWorkspace());
             return ResponseEntity.status(HttpStatus.CREATED).body(createdLane);
@@ -57,37 +48,44 @@ public class LaneController {
     }
 
     @PutMapping("/{id}/name")
-    public ResponseEntity<Lane> updateLaneName(@RequestBody Lane updatedLane) {
-        try{
+    public ResponseEntity<Lane> updateLaneName(@RequestBody int id, @RequestBody String newName) {
+        Lane updatedLane = laneService.getLaneById(id);
+        if (updatedLane == null) {
+            return ResponseEntity.notFound().build();
+        }
+        try {
             Lane lane = laneService.updateLaneName(updatedLane);
             return ResponseEntity.ok(lane);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
-    @PutMapping("/{id}/move")
-    public ResponseEntity<Workspace> updateLanePosition(@RequestBody Lane updatedLane) {
-        try{
-            Workspace workspace = workspaceService.updateLanePosition(updatedLane, updatedLane.getPosition());
+    @PatchMapping("/{id}/move")
+    public ResponseEntity<Workspace> updateLanePosition(@PathVariable int id, @RequestBody int newPosition) {
+        Lane lane = laneService.getLaneById(id);
+        if (lane == null) {
+            return ResponseEntity.notFound().build();
+        }
+        try {
+            Workspace workspace = workspaceService.updateLanePosition(lane, newPosition);
             return ResponseEntity.ok(workspace);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Workspace> deleteLane(@PathVariable int id) {
+    public ResponseEntity<Void> deleteLane(@PathVariable int id) {
         Lane lane = laneService.getLaneById(id);
-        if(lane == null){
+        if (lane == null) {
             return ResponseEntity.notFound().build();
         }
         try {
-            Workspace updatedWorkspace = workspaceService.deleteLane(lane);
-            return ResponseEntity.ok(updatedWorkspace);
+            workspaceService.deleteLane(lane);
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
 }

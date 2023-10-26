@@ -14,8 +14,12 @@ import java.util.Optional;
 @RequestMapping("/api/workspaces")
 public class WorkspaceController {
 
+    private final WorkspaceService workspaceService;
+
     @Autowired
-    private WorkspaceService workspaceService;
+    public WorkspaceController(WorkspaceService workspaceService) {
+        this.workspaceService = workspaceService;
+    }
 
     @GetMapping
     public ResponseEntity<List<Workspace>> getAllWorkspaces() {
@@ -24,11 +28,7 @@ public class WorkspaceController {
     }
     @GetMapping("/{id}")
     public ResponseEntity<Workspace> getWorkspaceById(@PathVariable int id) {
-        Workspace workspaceOptional = workspaceService.getWorkspaceById(id);
-        if (workspaceOptional == null) {
-            return ResponseEntity.notFound().build();
-        }
-            return ResponseEntity.ok(workspaceOptional);
+        return ResponseEntity.ofNullable(workspaceService.getWorkspaceById(id));
     }
 
     @PostMapping
@@ -37,9 +37,13 @@ public class WorkspaceController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdWorkspace);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Workspace> updateWorkspaceName(@RequestBody Workspace updatedWorkspace) {
-        Workspace workspace = workspaceService.updateName(updatedWorkspace, updatedWorkspace.getName());
+    @PatchMapping("/{id}/name")
+    public ResponseEntity<Workspace> updateWorkspace(@RequestBody int id, @RequestBody String newName) {
+        Workspace updatedWorkspace = workspaceService.getWorkspaceById(id);
+        if(updatedWorkspace == null){
+            return ResponseEntity.notFound().build();
+        }
+        Workspace workspace = workspaceService.update(updatedWorkspace);
         if(workspace == null){
             return ResponseEntity.notFound().build();
         }
@@ -47,12 +51,14 @@ public class WorkspaceController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Workspace> deleteWorkspace(@RequestBody Workspace workspace) {
-        Workspace workspaceOptional = workspaceService.deleteWorkspace(workspace);
-        if (workspaceOptional == null) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> deleteWorkspace(@PathVariable int id) {
+        try{
+            Workspace workspace = workspaceService.getWorkspaceById(id);
+            workspaceService.deleteWorkspace(workspace);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-            return ResponseEntity.ok(workspaceOptional);
     }
 
 }

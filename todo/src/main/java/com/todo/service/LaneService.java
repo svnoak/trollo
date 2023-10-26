@@ -25,6 +25,10 @@ public class LaneService {
         return laneRepository.findById(id).orElse(null);
     }
 
+    public Lane getLaneByWorkspaceAndPosition(int workspaceId, int position){
+        return laneRepository.findByWorkspaceIdAndPosition(workspaceId, position);
+    }
+
     public Task createTask(String name, String description, int position, Lane lane){
         Task task = new Task();
         task.setName(name);
@@ -39,9 +43,9 @@ public class LaneService {
     public void deleteTask(Task task){
         Lane lane = task.getLane();
         lane.getTasks().remove(task);
+        updateTaskPositions(lane);
         laneRepository.save(lane);
         taskRepository.delete(task);
-
     }
 
     public Lane updateTaskPosition(Task task, int position){

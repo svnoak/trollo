@@ -28,9 +28,9 @@ public class WorkspaceServiceTest {
     }
 
     @Test
-    void updateWorkspaceName() {
+    void updateWorkspace() {
         Workspace workspace = workspaceService.createWorkspace("Test Workspace");
-        assertDoesNotThrow(() -> workspaceService.updateName(workspace, "New name"));
+        assertDoesNotThrow(() -> workspaceService.update(workspace));
     }
 
     @Test

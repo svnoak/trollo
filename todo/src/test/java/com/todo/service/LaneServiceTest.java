@@ -76,4 +76,11 @@ class LaneServiceTest {
         assertEquals(1, task3.getPosition());
     }
 
+    @Test
+    void getLaneByWorkspaceIdAndPosition() {
+        Lane lane = workspaceService.createLane("Test Lane", workspace);
+        Lane foundLane = laneService.getLaneByWorkspaceAndPosition(workspace.getId(), lane.getPosition());
+        assertNotNull(foundLane);
+    }
+
 }

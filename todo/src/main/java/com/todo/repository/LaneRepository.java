@@ -12,4 +12,6 @@ import java.util.List;
 public interface LaneRepository extends JpaRepository<Lane, Integer> {
     Lane findLaneById(Integer id);
     List<Lane> findByWorkspaceId(Integer workspaceId);
+
+    Lane findByWorkspaceIdAndPosition(int workspaceId, int position);
 }

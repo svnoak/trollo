@@ -27,19 +27,12 @@ public class WorkspaceService {
     public Workspace createWorkspace(String name){
         Workspace workspace = new Workspace();
         workspace.setName(name);
-        Lane lane = new Lane();
-        lane.setName("To Do");
-        lane.setWorkspace(workspace);
-        lane.setPosition(0);
-        laneRepository.save(lane);
-        workspace.getLanes().add(lane);
         workspaceRepository.save(workspace);
         return workspace;
     }
 
-    public Workspace deleteWorkspace(Workspace workspace){
+    public void deleteWorkspace(Workspace workspace){
         workspaceRepository.delete(workspace);
-        return workspace;
     }
 
     public Lane createLane(String name, Workspace workspace){
@@ -57,16 +50,9 @@ public class WorkspaceService {
     public Workspace deleteLane(Lane lane){
         Workspace workspace = lane.getWorkspace();
         workspace.getLanes().remove(lane);
-        try {
-            workspaceRepository.save(workspace);
-        } catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-        try {
-            laneRepository.delete(lane);
-        } catch (Exception e){
-            System.out.println(e.getMessage());
-        }
+        updateLanePositions(workspace);
+        workspaceRepository.save(workspace);
+        laneRepository.delete(lane);
         return workspace;
     }
 
@@ -75,21 +61,23 @@ public class WorkspaceService {
         workspace.getLanes().remove(lane);
         lane.setPosition(position);
         workspace.getLanes().add(position, lane);
-
-        for(int i = 0; i < workspace.getLanes().size(); i++){
-            workspace.getLanes().get(i).setPosition(i);
-        }
-
+        updateLanePositions(workspace);
         return workspaceRepository.save(workspace);
     }
 
-    public Workspace updateName(Workspace workspace, String name) {
-        workspace.setName(name);
+    public Workspace update(Workspace workspace) {
         workspaceRepository.save(workspace);
         return workspace;
     }
 
     public List<Workspace> getAllWorkspaces() {
         return workspaceRepository.findAll();
+    }
+
+    private Workspace updateLanePositions(Workspace workspace) {
+        for(int i = 0; i < workspace.getLanes().size(); i++){
+            workspace.getLanes().get(i).setPosition(i);
+        }
+        return workspace;
     }
 }
