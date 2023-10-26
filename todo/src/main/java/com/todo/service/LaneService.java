@@ -2,10 +2,8 @@ package com.todo.service;
 
 import com.todo.model.Lane;
 import com.todo.model.Task;
-import com.todo.model.Workspace;
 import com.todo.repository.LaneRepository;
 import com.todo.repository.TaskRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,15 +32,24 @@ public class LaneService {
         task.setDescription(description);
         lane.getTasks().add(position, task);
         updateTaskPositions(lane);
-        taskRepository.save(task);
-        return task;
+        try {
+            taskRepository.save(task);
+            return task;
+        } catch (Exception e){
+            lane.getTasks().remove(task);
+            return null;
+        }
     }
 
     public void deleteTask(Task task){
         Lane lane = task.getLane();
         lane.getTasks().remove(task);
-        laneRepository.save(lane);
-        taskRepository.delete(task);
+        try{
+            laneRepository.save(lane);
+        } catch (Exception ignored){
+        } finally {
+            taskRepository.delete(task);
+        }
     }
 
     public Lane updateTaskPosition(Task task, int position){
@@ -53,7 +60,11 @@ public class LaneService {
 
         updateTaskPositions(lane);
 
-        return laneRepository.save(lane);
+        try{
+            return laneRepository.save(lane);
+        } catch (Exception e){
+            return null;
+        }
     }
 
     private void updateTaskPositions(Lane lane){
@@ -63,13 +74,21 @@ public class LaneService {
     }
 
     public List<Lane> getAllLanes() {
-        return laneRepository.findAll();
+        try {
+            return laneRepository.findAll();
+        } catch (Exception e){
+            return null;
+        }
     }
 
     public Lane updateLaneName(Lane updatedLane) {
         Lane lane = laneRepository.findById(updatedLane.getId()).orElse(null);
         if (lane == null) throw new AssertionError();
         lane.setName(updatedLane.getName());
-        return laneRepository.save(lane);
+        try {
+            return laneRepository.save(lane);
+        } catch (Exception e){
+            return null;
+        }
     }
 }
