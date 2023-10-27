@@ -1,6 +1,7 @@
 package com.todo.controller;
 
 
+import com.todo.dto.CreateTaskRequest;
 import com.todo.model.Lane;
 import com.todo.model.Task;
 import com.todo.model.Workspace;
@@ -29,72 +30,47 @@ public class TaskController {
         this.laneService = laneService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<Task>> getAllTasks() {
-        try {
-            List<Task> tasks = taskService.getAllTasks();
-            return ResponseEntity.ok(tasks);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    @GetMapping("/{taskId}")
+    public ResponseEntity<Task> getTaskById(@PathVariable int taskId) {
+        if(taskId < 0) {
+            return ResponseEntity.badRequest().build();
         }
+        return ResponseEntity.ofNullable(taskService.getTaskById(taskId));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable int id) {
-        return ResponseEntity.ofNullable(taskService.getTaskById(id));
-    }
-
-    @PostMapping("/{laneId}/create")
-    public ResponseEntity<Task> createTask(@PathVariable int laneId, @RequestBody Task task) {
-        Lane lane = laneService.getLaneById(laneId);
-        if(lane == null){
+    @PostMapping("/{taskId}")
+    public ResponseEntity<Task> updateTask(@PathVariable int taskId, @RequestBody Task task) {
+        if(taskId < 0 || task == null || task.getName() == null || task.getName().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        Task taskToUpdate = taskService.getTaskById(taskId);
+        if (taskToUpdate == null) {
             return ResponseEntity.notFound().build();
         }
         try {
-            Task createdTask = laneService.createTask(task.getName(), task.getDescription(), task.getPosition(), lane);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
+            taskToUpdate.setName(task.getName());
+            taskToUpdate.setDescription(task.getDescription());
+            taskToUpdate.setPosition(task.getPosition());
+            taskToUpdate.setLane(task.getLane());
+            Task updatedTask = taskService.updateTask(taskToUpdate);
+            return ResponseEntity.ok(updatedTask);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @PatchMapping("/{id}/")
-    public ResponseEntity<Task> updateTask(@RequestBody int id, @RequestBody Task task) {
-        Task updatedTask = taskService.getTaskById(id);
-        if (updatedTask == null) {
+    @DeleteMapping("/{taskId}")
+    public ResponseEntity<Task> deleteTask(@PathVariable int taskId) {
+        if(taskId < 0) {
+            return ResponseEntity.badRequest().build();
+        }
+        Task taskToDelete = taskService.getTaskById(taskId);
+        if (taskToDelete == null) {
             return ResponseEntity.notFound().build();
         }
         try {
-            Task updated = taskService.updateTask(updatedTask);
-            return ResponseEntity.ok(updated);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
-
-    @PatchMapping("/{id}/move")
-    public ResponseEntity<Lane> updateTaskPosition(@PathVariable int id, @RequestBody int newPosition) {
-        Task task = taskService.getTaskById(id);
-        if (task == null) {
-            return ResponseEntity.notFound().build();
-        }
-        try {
-            Lane lane = laneService.updateTaskPosition(task, newPosition);
-            return ResponseEntity.ok(lane);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLane(@PathVariable int id) {
-        Task task = taskService.getTaskById(id);
-        if (task == null) {
-            return ResponseEntity.notFound().build();
-        }
-        try {
-            laneService.deleteTask(task);
-            return ResponseEntity.noContent().build();
+            laneService.deleteTask(taskToDelete);
+            return ResponseEntity.ok(taskToDelete);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

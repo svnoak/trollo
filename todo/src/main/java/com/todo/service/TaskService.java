@@ -30,4 +30,8 @@ public class TaskService {
     public List<Task> getAllTasks() {
         return taskRepository.findAll();
     }
+
+    public List<Task> getTasksByLaneId(int laneId) {
+        return taskRepository.findByLaneId(laneId);
+    }
 }

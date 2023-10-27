@@ -1,6 +1,10 @@
 package com.todo.controller;
 
+import com.todo.model.Lane;
+import com.todo.model.Task;
 import com.todo.model.Workspace;
+import com.todo.service.LaneService;
+import com.todo.service.TaskService;
 import com.todo.service.WorkspaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,54 +12,88 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/workspaces")
 public class WorkspaceController {
 
     private final WorkspaceService workspaceService;
+    private final LaneService laneService;
 
     @Autowired
-    public WorkspaceController(WorkspaceService workspaceService) {
+    public WorkspaceController(WorkspaceService workspaceService, LaneService laneService) {
         this.workspaceService = workspaceService;
+        this.laneService = laneService;
     }
 
     @GetMapping
     public ResponseEntity<List<Workspace>> getAllWorkspaces() {
-        List<Workspace> workspaces = workspaceService.getAllWorkspaces();
-        return ResponseEntity.ok(workspaces);
+        try {
+            List<Workspace> workspaces = workspaceService.getAllWorkspaces();
+            return ResponseEntity.ok(workspaces);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
-    @GetMapping("/{id}")
-    public ResponseEntity<Workspace> getWorkspaceById(@PathVariable int id) {
-        return ResponseEntity.ofNullable(workspaceService.getWorkspaceById(id));
+
+    @GetMapping("/{workspaceId}")
+    public ResponseEntity<Workspace> getWorkspaceById(@PathVariable int workspaceId) {
+        if(workspaceId < 0) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ofNullable(workspaceService.getWorkspaceById(workspaceId));
+    }
+
+    @GetMapping("/{workspaceId}/lanes")
+    public ResponseEntity<List<Lane>> getAllLanesByWorkspaceId(@PathVariable  int workspaceId) {
+        if(workspaceId < 0) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(laneService.getLanesByWorkspaceId(workspaceId));
     }
 
     @PostMapping
     public ResponseEntity<Workspace> createWorkspace(@RequestBody Workspace workspace) {
-        Workspace createdWorkspace = workspaceService.createWorkspace(workspace.getName());
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdWorkspace);
+        if(workspace == null || workspace.getName() == null || workspace.getName().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        try {
+            Workspace createdWorkspace = workspaceService.createWorkspace(workspace.getName());
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdWorkspace);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
-    @PatchMapping("/{id}/name")
-    public ResponseEntity<Workspace> updateWorkspace(@RequestBody int id, @RequestBody String newName) {
-        Workspace updatedWorkspace = workspaceService.getWorkspaceById(id);
-        if(updatedWorkspace == null){
+    @PostMapping("/{workspaceId}/lanes")
+    public ResponseEntity<Lane> createLane(@PathVariable int workspaceId, @RequestBody Lane lane) {
+        if(workspaceId < 0 || lane == null || lane.getName() == null || lane.getName().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        Workspace workspace = workspaceService.getWorkspaceById(workspaceId);
+        if (workspace == null) {
             return ResponseEntity.notFound().build();
         }
-        Workspace workspace = workspaceService.update(updatedWorkspace);
-        if(workspace == null){
-            return ResponseEntity.notFound().build();
+        try {
+            Lane createdLane = workspaceService.createLane(lane.getName(), workspace);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdLane);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-        return ResponseEntity.ok(workspace);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteWorkspace(@PathVariable int id) {
-        try{
-            Workspace workspace = workspaceService.getWorkspaceById(id);
+    @DeleteMapping("/{workspaceId}")
+    public ResponseEntity<Workspace> deleteWorkspace(@PathVariable int workspaceId) {
+        if(workspaceId < 0) {
+            return ResponseEntity.badRequest().build();
+        }
+        Workspace workspace = workspaceService.getWorkspaceById(workspaceId);
+        if (workspace == null) {
+            return ResponseEntity.notFound().build();
+        }
+        try {
             workspaceService.deleteWorkspace(workspace);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok(workspace);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

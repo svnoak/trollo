@@ -29,6 +29,10 @@ public class LaneService {
         return laneRepository.findByWorkspaceIdAndPosition(workspaceId, position);
     }
 
+    public List<Lane> getLanesByWorkspaceId(int workspaceId){
+        return laneRepository.findByWorkspaceId(workspaceId);
+    }
+
     public Task createTask(String name, String description, int position, Lane lane){
         Task task = new Task();
         task.setName(name);

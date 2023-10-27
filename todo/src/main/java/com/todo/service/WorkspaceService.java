@@ -74,10 +74,9 @@ public class WorkspaceService {
         return workspaceRepository.findAll();
     }
 
-    private Workspace updateLanePositions(Workspace workspace) {
+    private void updateLanePositions(Workspace workspace) {
         for(int i = 0; i < workspace.getLanes().size(); i++){
             workspace.getLanes().get(i).setPosition(i);
         }
-        return workspace;
     }
 }

@@ -1,9 +1,10 @@
 package com.todo.controller;
 
-
 import com.todo.model.Lane;
+import com.todo.model.Task;
 import com.todo.model.Workspace;
 import com.todo.service.LaneService;
+import com.todo.service.TaskService;
 import com.todo.service.WorkspaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,74 +17,80 @@ import java.util.List;
 @RequestMapping("/api/lanes")
 public class LaneController {
 
-    @Autowired
     private LaneService laneService;
+    private WorkspaceService workspaceService;
+    private TaskService taskService;
 
     @Autowired
-    private WorkspaceService workspaceService;
-
-    @GetMapping
-    public ResponseEntity<List<Lane>> getAllLanes() {
-        try {
-            List<Lane> lanes = laneService.getAllLanes();
-            return ResponseEntity.ok(lanes);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+    public LaneController(LaneService laneService, WorkspaceService workspaceService, TaskService taskService) {
+        this.laneService = laneService;
+        this.workspaceService = workspaceService;
+        this.taskService = taskService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Lane> getLaneById(@PathVariable int id) {
-        return ResponseEntity.ofNullable(laneService.getLaneById(id));
+    @GetMapping("/{laneId}")
+    public ResponseEntity<Lane> getLaneById(@PathVariable int laneId) {
+        if(laneId < 0) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ofNullable(laneService.getLaneById(laneId));
     }
 
-    @PostMapping
-    public ResponseEntity<Lane> createLane(@RequestBody Lane lane) {
-        try {
-            Lane createdLane = workspaceService.createLane(lane.getName(), lane.getWorkspace());
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdLane);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    @GetMapping("/{laneId}/tasks")
+    public ResponseEntity<List<Task>> getAllTasksByLaneId(@PathVariable int laneId) {
+        if(laneId < 0) {
+            return ResponseEntity.badRequest().build();
         }
+        return ResponseEntity.ok(taskService.getTasksByLaneId(laneId));
     }
 
-    @PutMapping("/{id}/name")
-    public ResponseEntity<Lane> updateLaneName(@RequestBody int id, @RequestBody String newName) {
-        Lane updatedLane = laneService.getLaneById(id);
-        if (updatedLane == null) {
-            return ResponseEntity.notFound().build();
+    @PatchMapping("/{laneId}/name")
+    public ResponseEntity<Lane> updateLaneName(@PathVariable int laneId, @RequestBody String name) {
+        if(laneId < 0 || name == null || name.isEmpty()) {
+            return ResponseEntity.badRequest().build();
         }
-        try {
-            Lane lane = laneService.updateLaneName(updatedLane);
-            return ResponseEntity.ok(lane);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
-
-    @PatchMapping("/{id}/move")
-    public ResponseEntity<Workspace> updateLanePosition(@PathVariable int id, @RequestBody int newPosition) {
-        Lane lane = laneService.getLaneById(id);
+        Lane lane = laneService.getLaneById(laneId);
         if (lane == null) {
             return ResponseEntity.notFound().build();
         }
         try {
-            Workspace workspace = workspaceService.updateLanePosition(lane, newPosition);
-            return ResponseEntity.ok(workspace);
+            lane.setName(name);
+            Lane updatedLane = laneService.updateLaneName(lane);
+            return ResponseEntity.ok(updatedLane);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/{laneId}/tasks")
+    public ResponseEntity<Task> createTask(@PathVariable int laneId, @RequestBody Task task) {
+        if(laneId < 0 || task == null || task.getName() == null || task.getName().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        Lane lane = laneService.getLaneById(laneId);
+        if (lane == null) {
+            return ResponseEntity.notFound().build();
+        }
+        try {
+            Task createdTask = laneService.createTask(task.getName(), task.getDescription(), task.getPosition(), lane);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLane(@PathVariable int id) {
-        Lane lane = laneService.getLaneById(id);
+    @DeleteMapping("/{laneId}")
+    public ResponseEntity<Lane> deleteLane(@PathVariable int laneId) {
+        if(laneId < 0) {
+            return ResponseEntity.badRequest().build();
+        }
+        Lane lane = laneService.getLaneById(laneId);
         if (lane == null) {
             return ResponseEntity.notFound().build();
         }
         try {
             workspaceService.deleteLane(lane);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok(lane);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
