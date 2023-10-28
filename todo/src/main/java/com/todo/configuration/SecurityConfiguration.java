@@ -1,4 +1,4 @@
-package com.todo.security;
+package com.todo.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,9 +13,10 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests((authz) -> authz
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .anyRequest().permitAll()
                 )
+                .csrf().disable()
                 .httpBasic(withDefaults());
         return http.build();
     }
