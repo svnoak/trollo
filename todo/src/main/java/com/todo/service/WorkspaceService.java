@@ -1,5 +1,6 @@
 package com.todo.service;
 
+import com.todo.dto.response.LaneDTO;
 import com.todo.dto.response.WorkspaceDTO;
 import com.todo.model.Lane;
 import com.todo.model.Workspace;
@@ -64,13 +65,22 @@ public class WorkspaceService {
         return workspace;
     }
 
-    public Workspace moveLane(Lane lane, int position){
+    public WorkspaceDTO moveLane(int laneId, int position){
+
+        Lane lane = laneRepository.findById(laneId).orElse(null);
+        if(lane == null){
+            return null;
+        }
         Workspace workspace = lane.getWorkspace();
+        if(workspace == null){
+            return null;
+        }
         workspace.getLanes().remove(lane);
         lane.setPosition(position);
         workspace.getLanes().add(position, lane);
         updateLanePositions(workspace);
-        return workspaceRepository.save(workspace);
+        workspaceRepository.save(workspace);
+        return new WorkspaceDTO(workspace);
     }
 
     public Workspace update(Workspace workspace) {

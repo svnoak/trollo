@@ -1,22 +1,33 @@
 package com.todo.dto.request;
 
 import com.todo.model.Task;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 
 public class CreateTaskRequest {
-    private int laneId;
-    private Task task;
 
-    public CreateTaskRequest(int laneId, Task task){
+    @NotNull
+    @PositiveOrZero
+    private int laneId;
+    private String name;
+    private String description;
+
+    public CreateTaskRequest(int laneId, String name, String description){
         this.laneId = laneId;
-        this.task = task;
+        this.name = name;
+        this.description = description;
     }
 
     public int getLaneId(){
         return laneId;
     }
 
-    public Task getTask(){
-        return task;
+    public String getName(){
+        return name;
+    }
+
+    public String getDescription(){
+        return description;
     }
 
 }

@@ -1,11 +1,9 @@
 package com.todo.controller;
 
 import com.todo.dto.response.LaneDTO;
-import com.todo.dto.request.MoveLaneRequest;
 import com.todo.dto.response.WorkspaceDTO;
 import com.todo.model.Lane;
 import com.todo.model.Workspace;
-import com.todo.service.LaneService;
 import com.todo.service.WorkspaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,12 +18,10 @@ import java.util.List;
 public class WorkspaceController {
 
     private final WorkspaceService workspaceService;
-    private final LaneService laneService;
 
     @Autowired
-    public WorkspaceController(WorkspaceService workspaceService, LaneService laneService) {
+    public WorkspaceController(WorkspaceService workspaceService) {
         this.workspaceService = workspaceService;
-        this.laneService = laneService;
     }
 
     @GetMapping
@@ -89,26 +85,6 @@ public class WorkspaceController {
         try {
             workspaceService.deleteWorkspace(workspace);
             return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    @PostMapping("/{workspaceId}/lanes/move")
-    public ResponseEntity<WorkspaceDTO> moveLane(@PathVariable int workspaceId, @RequestBody MoveLaneRequest moveLaneRequest) {
-        int laneId = moveLaneRequest.getLaneId();
-        int newPosition = moveLaneRequest.getPosition();
-        if(laneId < 0 || workspaceId < 0 || newPosition < 0) {
-            return ResponseEntity.badRequest().build();
-        }
-        Lane lane = laneService.getLaneById(laneId);
-        if (lane == null) {
-            return ResponseEntity.notFound().build();
-        }
-        try {
-            Workspace updatedWorkspace = workspaceService.moveLane(lane, newPosition);
-            WorkspaceDTO updatedWorkspaceDTO = new WorkspaceDTO(updatedWorkspace);
-            return ResponseEntity.ok(updatedWorkspaceDTO);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

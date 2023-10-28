@@ -1,7 +1,6 @@
 package com.todo.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.todo.dto.request.MoveLaneRequest;
 import com.todo.dto.response.WorkspaceDTO;
 import com.todo.model.Lane;
 import com.todo.model.Workspace;
@@ -113,25 +112,4 @@ public class WorkspaceControllerTest {
                 .andExpect(content().json(objectMapper.writeValueAsString(lanes)));
     }
 
-    @Test
-    public void testMoveLane() throws Exception {
-        Lane lane1 = workspaceService.createLane("Test Lane 1", workspace);
-        workspaceService.createLane("Test Lane 2", workspace);
-        workspaceService.createLane("Test Lane 3", workspace);
-
-        MoveLaneRequest moveLaneRequest = new MoveLaneRequest(lane1.getId(), 2);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        String moveLaneRequestJson = objectMapper.writeValueAsString(moveLaneRequest);
-
-        Workspace expectedWorkspace = workspaceService.moveLane(lane1, 2);
-        WorkspaceDTO expectedWorkspaceDTO = new WorkspaceDTO(expectedWorkspace);
-
-        mockMvc.perform(post("/api/workspaces/"+ workspace.getId() +"/lanes/move")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(moveLaneRequestJson))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(objectMapper.writeValueAsString(expectedWorkspaceDTO)));
-    }
 }

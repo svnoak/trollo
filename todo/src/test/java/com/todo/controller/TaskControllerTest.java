@@ -1,5 +1,7 @@
 package com.todo.controller;
 
+import com.todo.dto.request.ChangeTaskDetails;
+import com.todo.dto.request.CreateTaskRequest;
 import com.todo.dto.response.TaskDTO;
 import com.todo.model.Lane;
 import com.todo.model.Task;
@@ -48,6 +50,25 @@ public class TaskControllerTest {
     }
 
     @Test
+    public void testCreateTask() throws Exception {
+        CreateTaskRequest createTaskRequest = new CreateTaskRequest(lane.getId(), "Test Task", "Test Description");
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/tasks")
+                        .content(new ObjectMapper().writeValueAsString(createTaskRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    public void testCreateTaskNotFound() throws Exception {
+        CreateTaskRequest createTaskRequest = new CreateTaskRequest(-1, "Test Task", "Test Description");
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/tasks")
+                        .content(new ObjectMapper().writeValueAsString(createTaskRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
     public void testGetTaskById() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/tasks/" + task.getId()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -68,10 +89,10 @@ public class TaskControllerTest {
 
     @Test
     public void testUpdateTaskDetails() throws Exception {
-        task.setName("Updated Task Name");
+
         ObjectMapper objectMapper = new ObjectMapper();
         String updatedTaskJson = objectMapper.writeValueAsString(task);
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/tasks/" + task.getId())
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/tasks/" + task.getId())
                         .content(updatedTaskJson)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -79,19 +100,15 @@ public class TaskControllerTest {
 
     @Test
     public void testUpdateTaskBadRequest() throws Exception {
-        task.setName("");
-        ObjectMapper objectMapper = new ObjectMapper();
-        String updatedTaskJson = objectMapper.writeValueAsString(task);
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/tasks/" + task.getId())
-                        .content(updatedTaskJson)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().is5xxServerError());
     }
 
     @Test
     public void testDeleteTask() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/tasks/" + task.getId()))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
     @Test

@@ -1,11 +1,10 @@
 package com.todo.controller;
 
 import com.todo.dto.request.CreateLaneRequest;
-import com.todo.dto.request.MoveTaskRequest;
 import com.todo.dto.response.LaneDTO;
 import com.todo.dto.response.TaskDTO;
+import com.todo.dto.response.WorkspaceDTO;
 import com.todo.model.Lane;
-import com.todo.model.Task;
 import com.todo.model.Workspace;
 import com.todo.service.LaneService;
 import com.todo.service.TaskService;
@@ -15,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -105,6 +103,19 @@ public class LaneController {
         try {
             workspaceService.deleteLane(lane);
             return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/{laneId}/move")
+    public ResponseEntity<WorkspaceDTO> moveLane(@PathVariable int laneId, @RequestBody int newPosition) {
+        if(laneId < 0 || newPosition < 0) {
+            return ResponseEntity.badRequest().build();
+        }
+        try {
+            WorkspaceDTO updatedWorkspace = workspaceService.moveLane(laneId, newPosition);
+            return ResponseEntity.ofNullable(updatedWorkspace);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

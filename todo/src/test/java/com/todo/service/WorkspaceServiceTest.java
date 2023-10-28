@@ -42,7 +42,7 @@ public class WorkspaceServiceTest {
         assertEquals(0, lane1.getPosition());
         assertEquals(1, lane2.getPosition());
         assertEquals(2, lane3.getPosition());
-        assertDoesNotThrow(() -> workspaceService.moveLane(lane1, 2));
+        assertDoesNotThrow(() -> workspaceService.moveLane(lane1.getId(), 2));
         assertEquals(2, lane1.getPosition());
         assertEquals(0, lane2.getPosition());
         assertEquals(1, lane3.getPosition());

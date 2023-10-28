@@ -1,5 +1,7 @@
 package com.todo.service;
 
+import com.todo.dto.request.ChangeTaskDetails;
+import com.todo.dto.response.TaskDTO;
 import com.todo.model.Lane;
 import com.todo.model.Task;
 import com.todo.model.Workspace;
@@ -39,20 +41,20 @@ public class TaskServiceTest {
 
     @Test
     void testUpdateTask() {
-        Task task = laneService.createTask("Test Task", "Test Description", lane.getTasks().size(), lane);
-        task.setName("Test Task 2");
-        assertDoesNotThrow(() -> taskService.updateTask(task));
+        TaskDTO taskDTO = laneService.createTask("Test Task", "Test Description", lane.getTasks().size(), lane);
+        ChangeTaskDetails changeTaskDetails = new ChangeTaskDetails("New Name", "");
+        assertDoesNotThrow(() -> taskService.updateTaskDetails(taskDTO.getId(),changeTaskDetails ));
     }
 
     @Test
     void testDeleteTask() {
-        Task task = laneService.createTask("Test Task", "Test Description", lane.getTasks().size(), lane);
-        assertDoesNotThrow(() -> laneService.deleteTask(task));
+        TaskDTO task = laneService.createTask("Test Task", "Test Description", lane.getTasks().size(), lane);
+        assertDoesNotThrow(() -> laneService.deleteTask(task.getId()));
     }
 
     @Test
     void testGetTaskById() {
-        Task task = laneService.createTask("Test Task", "Test Description",lane.getTasks().size(), lane);
+        TaskDTO task = laneService.createTask("Test Task", "Test Description",lane.getTasks().size(), lane);
         assertDoesNotThrow(() -> taskService.getTaskById(task.getId()));
     }
 }

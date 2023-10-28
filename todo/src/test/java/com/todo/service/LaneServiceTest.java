@@ -62,8 +62,7 @@ class LaneServiceTest {
     void deleteTask(){
         Lane lane = workspaceService.createLane("Test Lane", workspace);
         TaskDTO taskDTO = laneService.createTask("Test Task","Test Description", 0, lane);
-        Task task = taskService.getTaskById(taskDTO.getId());
-        assertDoesNotThrow(() -> laneService.deleteTask(task));
+        assertDoesNotThrow(() -> laneService.deleteTask(taskDTO.getId()));
         assertEquals(0, lane.getTasks().size());
     }
 
@@ -76,16 +75,10 @@ class LaneServiceTest {
         assertEquals(0, task1.getPosition());
         assertEquals(1, task2.getPosition());
         assertEquals(2, task3.getPosition());
-        assertDoesNotThrow(() -> laneService.moveTask(taskService.getTaskById(task1.getId()), lane, lane, 2));
+        assertDoesNotThrow(() -> laneService.moveTask(task1.getId(), lane.getId(), lane.getId(), 2));
         assertEquals(2, task1.getPosition());
         assertEquals(0, task2.getPosition());
         assertEquals(1, task3.getPosition());
     }
 
-    @Test
-    void testGetLaneByWorkspaceIdAndPosition() {
-        Lane lane = workspaceService.createLane("Test Lane", workspace);
-        Lane foundLane = laneService.getLaneByWorkspaceAndPosition(workspace.getId(), lane.getPosition());
-        assertNotNull(foundLane);
-    }
 }

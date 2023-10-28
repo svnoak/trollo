@@ -1,18 +1,25 @@
 package com.todo.controller;
 
 
+import com.todo.dto.request.ChangeTaskDetails;
+import com.todo.dto.request.CreateTaskRequest;
 import com.todo.dto.request.MoveTaskRequest;
+import com.todo.dto.response.LaneDTO;
 import com.todo.dto.response.TaskDTO;
 import com.todo.model.Lane;
 import com.todo.model.Task;
 import com.todo.service.LaneService;
 import com.todo.service.TaskService;
 import com.todo.service.WorkspaceService;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -30,15 +37,18 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<TaskDTO> createTask(@RequestBody TaskDTO task) {
+    public ResponseEntity<TaskDTO> createTask(@RequestBody CreateTaskRequest task) {
         try {
         Lane lane = laneService.getLaneById(task.getLaneId());
         if (lane == null) {
             return ResponseEntity.notFound().build();
         }
-            TaskDTO createdTask = laneService.createTask(task.getName(), task.getDescription(), task.getPosition(), lane);
+            TaskDTO createdTask = laneService.createTask(task.getName(), task.getDescription(), lane.getTasks().size(), lane);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
-        } catch (Exception e) {
+        } catch (ObjectNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+        catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
@@ -48,20 +58,21 @@ public class TaskController {
         if(taskId < 0) {
             return ResponseEntity.badRequest().build();
         }
+
         return ResponseEntity.ofNullable(taskService.getTaskByIdAsDTO(taskId));
     }
 
     @PatchMapping("/{taskId}")
-    public ResponseEntity<TaskDTO> updateTaskDetails(@PathVariable int taskId, @RequestBody TaskDTO task) {
+    public ResponseEntity<TaskDTO> updateTaskDetails(@PathVariable int taskId, @RequestBody(required = false) ChangeTaskDetails taskDetails) {
         try {
-        Task taskToUpdate = taskService.getTaskById(taskId);
-        if (taskToUpdate == null) {
-            return ResponseEntity.notFound().build();
-        }
-            taskToUpdate.setName(task.getName());
-            taskToUpdate.setDescription(task.getDescription());
-            TaskDTO updatedTask = taskService.updateTask(taskToUpdate);
-            return ResponseEntity.ok(updatedTask);
+            if(taskId < 0) {
+                return ResponseEntity.badRequest().build();
+            }
+            if( taskDetails == null ) {
+                return ResponseEntity.badRequest().build();
+            }
+            TaskDTO updatedTask = taskService.updateTaskDetails(taskId, taskDetails);
+            return ResponseEntity.ofNullable(updatedTask);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
@@ -70,17 +81,9 @@ public class TaskController {
     }
 
     @PatchMapping("/{taskId}/move")
-    public ResponseEntity<Task> moveTask(@PathVariable int taskId, @RequestBody MoveTaskRequest moveTaskRequest) {
+    public ResponseEntity<List<LaneDTO>> moveTask(@PathVariable int taskId, @RequestBody MoveTaskRequest moveTaskRequest) {
         try {
-            Lane sourceLane = laneService.getLaneById(moveTaskRequest.getSourceLaneId());
-            Lane targetLane = laneService.getLaneById(moveTaskRequest.getTargetLaneId());
-            Task task = taskService.getTaskById(taskId);
-            int newTaskPosition = moveTaskRequest.getNewTaskPosition();
-            if (sourceLane == null || targetLane == null || task == null) {
-                return ResponseEntity.notFound().build();
-            }
-            laneService.moveTask(task, sourceLane, targetLane, newTaskPosition);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ofNullable(Collections.singletonList(laneService.moveTask(taskId, moveTaskRequest.getSourceLaneId(), moveTaskRequest.getTargetLaneId(), moveTaskRequest.getNewTaskPosition())));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
@@ -93,14 +96,13 @@ public class TaskController {
         if(taskId < 0) {
             return ResponseEntity.badRequest().build();
         }
-        Task taskToDelete = taskService.getTaskById(taskId);
-        if (taskToDelete == null) {
+        try {
+            laneService.deleteTask(taskId);
+            return ResponseEntity.noContent().build();
+        } catch (ObjectNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
-        try {
-            laneService.deleteTask(taskToDelete);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
+        catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

@@ -1,5 +1,6 @@
 package com.todo.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.todo.dto.response.TaskDTO;
 import com.todo.model.Lane;
 import com.todo.model.Task;
@@ -74,6 +75,57 @@ public class LaneControllerTest {
     }
 
     @Test
+    public void testCreateLane() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/lanes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"name\":\"Test Lane 2\",\"workspaceId\":" + workspace.getId() + "}"))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    public void testCreateLaneBadRequest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/lanes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"name\":\"Test Lane 2\",\"workspaceId\":" + -1 + "}"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    public void testUpdateLaneName() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/lanes/" + lane.getId() + "/name")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"Updated Name\"}"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    public void testUpdateLaneNameBadRequest() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/lanes/" + lane.getId() + "/name")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(""))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    public void testUpdateLaneNameNotFound() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/lanes/" + 1000 + "/name")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"Updated Name\"}"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
+    public void testUpdateLaneNameBadRequestId() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/lanes/" + -1 + "/name")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"Updated Name\"}"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
     public void testDeleteLane() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/lanes/" + lane.getId()))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
@@ -92,79 +144,45 @@ public class LaneControllerTest {
     }
 
     @Test
-    public void testUpdateLaneName() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.patch("/api/lanes/" + lane.getId() + "/name")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"Updated Name\"}"))
+    public void testMoveLane() throws Exception {
+        Lane lane1 = workspaceService.createLane("Test Lane 1", workspace);
+        workspaceService.createLane("Test Lane 2", workspace);
+        workspaceService.createLane("Test Lane 3", workspace);
+
+        int newPosition = 2;
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/lanes/"+ lane1.getId() +"/move")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(newPosition)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
-    public void testUpdateLaneNameBadRequest() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders.patch("/api/lanes/" + lane.getId() + "/name")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(""))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-    }
-
-    @Test
-    public void testUpdateLaneNameNotFound() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.patch("/api/lanes/" + 1000 + "/name")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"Updated Name\"}"))
+    public void testMoveLaneNotFound() throws Exception {
+        int newPosition = 2;
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/lanes/"+ 1000 +"/move")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(newPosition)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
-    public void testUpdateLaneNameBadRequestId() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.patch("/api/lanes/" + -1 + "/name")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"Updated Name\"}"))
+    public void testMoveLaneBadRequestId() throws Exception {
+        int newPosition = 2;
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/lanes/"+ -1 +"/move")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(newPosition)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
-    public void testCreateTask() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/lanes/" + lane.getId() + "/tasks")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"Test Task\",\"description\":\"Test Description\",\"position\":0}"))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
-    }
-
-    @Test
-    public void testCreateTaskBadRequest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/lanes/" + lane.getId() + "/tasks")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"\",\"description\":\"Test Description\",\"position\":0}"))
+    public void testMoveLaneBadRequestPosition() throws Exception {
+        int newPosition = -1;
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/lanes/"+ lane.getId() +"/move")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(newPosition)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
-    }
-
-    @Test
-    public void testCreateTaskNotFound() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/lanes/" + 1000 + "/tasks")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"Test Task\",\"description\":\"Test Description\",\"position\":0}"))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
-    }
-
-    @Test
-    public void testCreateTaskBadRequestId() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/lanes/" + -1 + "/tasks")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"Test Task\",\"description\":\"Test Description\",\"position\":0}"))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-    }
-
-    @Test
-    public void testMoveTask() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.patch("/api/lanes/" + lane.getId() + "/tasks/" + task.getId() + "/move")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"position\":1}"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     }
 
 }

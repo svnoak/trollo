@@ -6,7 +6,10 @@ import com.todo.model.Lane;
 import com.todo.model.Task;
 import com.todo.repository.LaneRepository;
 import com.todo.repository.TaskRepository;
+import org.hibernate.ObjectNotFoundException;
+import org.hibernate.annotations.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,16 +30,10 @@ public class LaneService {
         return laneRepository.findById(id).orElse(null);
     }
 
-    public LaneDTO getLaneByIdAsDTO(int id){
+    public LaneDTO getLaneByIdAsDTO(int id) throws ObjectNotFoundException{
         Lane lane = laneRepository.findById(id).orElse(null);
-        if(lane == null){
-            return null;
-        }
+        if(lane == null) throw new ObjectNotFoundException(id, "Lane");
         return new LaneDTO(lane);
-    }
-
-    public Lane getLaneByWorkspaceAndPosition(int workspaceId, int position){
-        return laneRepository.findByWorkspaceIdAndPosition(workspaceId, position);
     }
 
     public List<Lane> getLanesByWorkspaceId(int workspaceId){
@@ -45,6 +42,7 @@ public class LaneService {
 
     public TaskDTO createTask(String name, String description, int position, Lane lane){
         Task task = new Task();
+        if(name == null || name.isEmpty()) name = "New Task";
         task.setName(name);
         task.setLane(lane);
         task.setDescription(description);
@@ -54,7 +52,9 @@ public class LaneService {
         return new TaskDTO(task);
     }
 
-    public void deleteTask(Task task){
+    public void deleteTask(int taskId) throws ObjectNotFoundException {
+        Task task = taskRepository.findById(taskId).orElse(null);
+        if(task == null) throw new ObjectNotFoundException(taskId, "Task");
         Lane lane = task.getLane();
         lane.getTasks().remove(task);
         updateTaskPositions(lane);
@@ -62,7 +62,11 @@ public class LaneService {
         taskRepository.delete(task);
     }
 
-    public Lane moveTask(Task task, Lane sourceLane, Lane targetLane, int newTaskPosition){
+    public LaneDTO moveTask(int taskId, int sourceLaneId, int targetLaneId, int newTaskPosition){
+        Task task = taskRepository.findById(taskId).orElse(null);
+        Lane sourceLane = laneRepository.findById(sourceLaneId).orElse(null);
+        Lane targetLane = laneRepository.findById(targetLaneId).orElse(null);
+        if(task == null || sourceLane == null || targetLane == null) return null;
         sourceLane.getTasks().remove(task);
         targetLane.getTasks().add(newTaskPosition, task);
         task.setLane(targetLane);
@@ -70,7 +74,11 @@ public class LaneService {
         updateTaskPositions(targetLane);
         laneRepository.save(sourceLane);
         laneRepository.save(targetLane);
-        return targetLane;
+        List<Lane> lanes = List.of(sourceLane, targetLane);
+        return lanes.stream()
+                .map(LaneDTO::new)
+                .findFirst()
+                .orElse(null);
     }
 
     private void updateTaskPositions(Lane lane){
@@ -79,9 +87,9 @@ public class LaneService {
         }
     }
 
-    public Lane updateLaneName(Lane updatedLane) {
+    public Lane updateLaneName(Lane updatedLane) throws ObjectNotFoundException{
         Lane lane = laneRepository.findById(updatedLane.getId()).orElse(null);
-        if (lane == null) throw new AssertionError();
+        if (lane == null) throw new ObjectNotFoundException(updatedLane.getId(), "Lane");
         lane.setName(updatedLane.getName());
         return laneRepository.save(lane);
     }

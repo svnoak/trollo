@@ -25,7 +25,7 @@ public class Lane {
 
     private String name;
 
-    @OneToMany(mappedBy = "lane", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "lane", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Task> tasks = new ArrayList<Task>();
 
     @ManyToOne
