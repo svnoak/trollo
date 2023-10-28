@@ -33,25 +33,25 @@ public class TaskServiceTest {
         lane = workspaceService.createLane("Lane",workspace);
     }
     @Test
-    void createTask() {
+    void testCreateTask() {
         assertDoesNotThrow(() -> laneService.createTask("Test Task", "Test Description",lane.getTasks().size(), lane));
     }
 
     @Test
-    void updateTask() {
+    void testUpdateTask() {
         Task task = laneService.createTask("Test Task", "Test Description", lane.getTasks().size(), lane);
         task.setName("Test Task 2");
         assertDoesNotThrow(() -> taskService.updateTask(task));
     }
 
     @Test
-    void deleteTask() {
+    void testDeleteTask() {
         Task task = laneService.createTask("Test Task", "Test Description", lane.getTasks().size(), lane);
         assertDoesNotThrow(() -> laneService.deleteTask(task));
     }
 
     @Test
-    void getTaskById() {
+    void testGetTaskById() {
         Task task = laneService.createTask("Test Task", "Test Description",lane.getTasks().size(), lane);
         assertDoesNotThrow(() -> taskService.getTaskById(task.getId()));
     }

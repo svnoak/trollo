@@ -24,7 +24,7 @@ class LaneRepositoryTest {
     private WorkspaceRepository workspaceRepository;
 
     @Test
-    void createLane(){
+    void testCreateLane(){
         Workspace workspace = new Workspace();
         workspaceRepository.save(workspace);
 
@@ -34,13 +34,13 @@ class LaneRepositoryTest {
     }
 
     @Test
-    void createLaneWithoutWorkspace(){
+    void testCreateLaneWithoutWorkspace(){
         Lane lane = new Lane();
         assertThrows(Exception.class, () -> laneRepository.save(lane));
     }
 
     @Test
-    void getLaneById(){
+    void testGetLaneById(){
         Workspace workspace = new Workspace();
         workspaceRepository.save(workspace);
 
@@ -51,7 +51,7 @@ class LaneRepositoryTest {
     }
 
     @Test
-    void deleteLane(){
+    void testDeleteLane(){
         Workspace workspace = new Workspace();
         workspaceRepository.save(workspace);
 

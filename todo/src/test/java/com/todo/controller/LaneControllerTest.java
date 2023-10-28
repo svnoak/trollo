@@ -1,5 +1,6 @@
 package com.todo.controller;
 
+import com.todo.dto.response.TaskDTO;
 import com.todo.model.Lane;
 import com.todo.model.Task;
 import com.todo.model.Workspace;
@@ -34,7 +35,7 @@ public class LaneControllerTest {
 
     private Workspace workspace;
     private Lane lane;
-    private Task task;
+    private TaskDTO task;
 
     @Autowired
     public LaneControllerTest(MockMvc mockMvc, WorkspaceService workspaceService, LaneService laneService, TaskService taskService, WorkspaceRepository workspaceRepository, LaneRepository laneRepository, TaskRepository taskRepository) {
@@ -73,6 +74,58 @@ public class LaneControllerTest {
     }
 
     @Test
+    public void testDeleteLane() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/lanes/" + lane.getId()))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
+
+    @Test
+    public void testDeleteLaneNotFound() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/lanes/" + 1000))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
+    public void testDeleteLaneBadRequest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/lanes/" + -1))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    public void testUpdateLaneName() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/lanes/" + lane.getId() + "/name")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"name\":\"Updated Name\"}"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    public void testUpdateLaneNameBadRequest() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/lanes/" + lane.getId() + "/name")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(""))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    public void testUpdateLaneNameNotFound() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/lanes/" + 1000 + "/name")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"name\":\"Updated Name\"}"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
+    public void testUpdateLaneNameBadRequestId() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/lanes/" + -1 + "/name")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"name\":\"Updated Name\"}"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
     public void testCreateTask() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/lanes/" + lane.getId() + "/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -98,7 +151,7 @@ public class LaneControllerTest {
     }
 
     @Test
-    public void testCreateTaskBadRequest2() throws Exception {
+    public void testCreateTaskBadRequestId() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/lanes/" + -1 + "/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"name\":\"Test Task\",\"description\":\"Test Description\",\"position\":0}"))
@@ -106,8 +159,12 @@ public class LaneControllerTest {
     }
 
     @Test
-    public void testDeleteTask() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/lanes/" + lane.getId() + "/tasks/" + task.getId()))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+    public void testMoveTask() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/lanes/" + lane.getId() + "/tasks/" + task.getId() + "/move")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"position\":1}"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     }
+
 }

@@ -1,5 +1,7 @@
 package com.todo.service;
 
+import com.todo.dto.response.LaneDTO;
+import com.todo.dto.response.TaskDTO;
 import com.todo.model.Lane;
 import com.todo.model.Task;
 import com.todo.repository.LaneRepository;
@@ -25,6 +27,14 @@ public class LaneService {
         return laneRepository.findById(id).orElse(null);
     }
 
+    public LaneDTO getLaneByIdAsDTO(int id){
+        Lane lane = laneRepository.findById(id).orElse(null);
+        if(lane == null){
+            return null;
+        }
+        return new LaneDTO(lane);
+    }
+
     public Lane getLaneByWorkspaceAndPosition(int workspaceId, int position){
         return laneRepository.findByWorkspaceIdAndPosition(workspaceId, position);
     }
@@ -33,7 +43,7 @@ public class LaneService {
         return laneRepository.findByWorkspaceId(workspaceId);
     }
 
-    public Task createTask(String name, String description, int position, Lane lane){
+    public TaskDTO createTask(String name, String description, int position, Lane lane){
         Task task = new Task();
         task.setName(name);
         task.setLane(lane);
@@ -41,7 +51,7 @@ public class LaneService {
         lane.getTasks().add(position, task);
         updateTaskPositions(lane);
         taskRepository.save(task);
-        return task;
+        return new TaskDTO(task);
     }
 
     public void deleteTask(Task task){
@@ -52,24 +62,21 @@ public class LaneService {
         taskRepository.delete(task);
     }
 
-    public Lane updateTaskPosition(Task task, int position){
-        Lane lane = task.getLane();
-        lane.getTasks().remove(task);
-        task.setPosition(position);
-        lane.getTasks().add(position, task);
-
-        updateTaskPositions(lane);
-        return laneRepository.save(lane);
+    public Lane moveTask(Task task, Lane sourceLane, Lane targetLane, int newTaskPosition){
+        sourceLane.getTasks().remove(task);
+        targetLane.getTasks().add(newTaskPosition, task);
+        task.setLane(targetLane);
+        updateTaskPositions(sourceLane);
+        updateTaskPositions(targetLane);
+        laneRepository.save(sourceLane);
+        laneRepository.save(targetLane);
+        return targetLane;
     }
 
     private void updateTaskPositions(Lane lane){
         for(int i = 0; i < lane.getTasks().size(); i++){
             lane.getTasks().get(i).setPosition(i);
         }
-    }
-
-    public List<Lane> getAllLanes() {
-        return laneRepository.findAll();
     }
 
     public Lane updateLaneName(Lane updatedLane) {

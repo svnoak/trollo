@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class WorkspaceTest {
 
     @Test
-    void getId() {
+    void testGetId() {
         Workspace workspace = new Workspace();
         assertNotNull(workspace);
         ReflectionTestUtils.setField(workspace, "id", 1);
@@ -20,7 +20,7 @@ class WorkspaceTest {
     }
 
     @Test
-    void getName() {
+    void testGetName() {
         Workspace workspace = new Workspace();
         assertNotNull(workspace);
         workspace.setName("workspace");
@@ -28,7 +28,7 @@ class WorkspaceTest {
     }
 
     @Test
-    void getLanes() {
+    void testGetLanes() {
         Workspace workspace = new Workspace();
         assertNotNull(workspace);
 
@@ -39,7 +39,7 @@ class WorkspaceTest {
     }
 
     @Test
-    void setName() {
+    void testSetName() {
         Workspace workspace = new Workspace();
         assertNotNull(workspace);
         assertDoesNotThrow(() -> workspace.setName("name"));
@@ -47,7 +47,7 @@ class WorkspaceTest {
     }
 
     @Test
-    void setLanes() {
+    void testSetLanes() {
         Workspace workspace = new Workspace();
         assertNotNull(workspace);
         Lane lane = new Lane();

@@ -1,6 +1,9 @@
 package com.todo.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.todo.dto.request.MoveLaneRequest;
+import com.todo.dto.response.WorkspaceDTO;
+import com.todo.model.Lane;
 import com.todo.model.Workspace;
 import com.todo.repository.WorkspaceRepository;
 import com.todo.server.ServerApplication;
@@ -9,24 +12,31 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = ServerApplication.class)
 @AutoConfigureMockMvc(addFilters = false)
 public class WorkspaceControllerTest {
 
-    private MockMvc mockMvc;
-    private WorkspaceRepository workspaceRepository;
+    private final MockMvc mockMvc;
+    private final WorkspaceRepository workspaceRepository;
+    private final WorkspaceService workspaceService;
 
     @Autowired
-    public WorkspaceControllerTest(WorkspaceRepository workspaceRepository, MockMvc mockMvc) {
+    public WorkspaceControllerTest(
+            WorkspaceService workspaceService,
+            WorkspaceRepository workspaceRepository,
+            MockMvc mockMvc) {
+        this.workspaceService = workspaceService;
         this.workspaceRepository = workspaceRepository;
         this.mockMvc = mockMvc;
     }
@@ -36,23 +46,26 @@ public class WorkspaceControllerTest {
     @BeforeEach
     void setup() {
         workspaceRepository.deleteAll();
-        Workspace testWorkspace = new Workspace();
-        testWorkspace.setName("Test Workspace");
-        workspace = workspaceRepository.save(testWorkspace);
+        workspace = workspaceService.createWorkspace("Test workspace");
     }
 
     @Test
     public void testGetAllWorkspaces() throws Exception {
+        List<WorkspaceDTO> workspaceDTOs = workspaceService.getAllWorkspaces();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
         mockMvc.perform(MockMvcRequestBuilders.get("/api/workspaces"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(workspaceDTOs)));
     }
 
     @Test
     public void testGetWorkspaceById() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/workspaces/" + workspace.getId()))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -63,16 +76,62 @@ public class WorkspaceControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         String workspaceJson = objectMapper.writeValueAsString(workspace);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/workspaces")
+        mockMvc.perform(post("/api/workspaces")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(workspaceJson))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    public void testUpdateWorkspaceNoName() throws Exception {
+        Workspace workspace = new Workspace();
+        workspace.setName("");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String workspaceJson = objectMapper.writeValueAsString(workspace);
+
+        mockMvc.perform(post("/api/workspaces")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(workspaceJson))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     public void testDeleteWorkspace() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/workspaces/" + workspace.getId()))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void testGetAllLanesByWorkspaceId() throws Exception {
+        List<Lane> lanes = workspace.getLanes();
+        ObjectMapper objectMapper = new ObjectMapper();
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/workspaces/" + workspace.getId() + "/lanes"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(lanes)));
+    }
+
+    @Test
+    public void testMoveLane() throws Exception {
+        Lane lane1 = workspaceService.createLane("Test Lane 1", workspace);
+        workspaceService.createLane("Test Lane 2", workspace);
+        workspaceService.createLane("Test Lane 3", workspace);
+
+        MoveLaneRequest moveLaneRequest = new MoveLaneRequest(lane1.getId(), 2);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String moveLaneRequestJson = objectMapper.writeValueAsString(moveLaneRequest);
+
+        Workspace expectedWorkspace = workspaceService.moveLane(lane1, 2);
+        WorkspaceDTO expectedWorkspaceDTO = new WorkspaceDTO(expectedWorkspace);
+
+        mockMvc.perform(post("/api/workspaces/"+ workspace.getId() +"/lanes/move")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(moveLaneRequestJson))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(expectedWorkspaceDTO)));
     }
 }

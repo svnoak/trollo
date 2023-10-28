@@ -19,14 +19,14 @@ class WorkspaceRepositoryTest {
     private WorkspaceRepository workspaceRepository;
 
     @Test
-    void createWorkspace(){
+    void testCreateWorkspace(){
         Workspace workspace = new Workspace();
         workspace.setName("Test Workspace");
         assertDoesNotThrow(() -> workspaceRepository.save(workspace));
     }
 
     @Test
-    void deleteWorkspace(){
+    void testDeleteWorkspace(){
         Workspace workspace = new Workspace();
         workspace.setName("Test Workspace");
         workspaceRepository.save(workspace);
@@ -34,7 +34,7 @@ class WorkspaceRepositoryTest {
     }
 
     @Test
-    void updateWorkspace(){
+    void testUpdateWorkspace(){
         Workspace workspace = new Workspace();
         workspace.setName("Test Workspace");
         workspaceRepository.save(workspace);
@@ -43,7 +43,7 @@ class WorkspaceRepositoryTest {
     }
 
     @Test
-    void findWorkspaceById() {
+    void testFindWorkspaceById() {
         Workspace workspace = new Workspace();
         workspace.setName("Test Workspace");
         int workspaceId = workspaceRepository.save(workspace).getId();

@@ -13,7 +13,7 @@ public class Workspace {
     private int id;
     private String name;
 
-    @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Lane> lanes = new ArrayList<Lane>();
 
 

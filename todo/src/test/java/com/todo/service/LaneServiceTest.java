@@ -1,5 +1,6 @@
 package com.todo.service;
 
+import com.todo.dto.response.TaskDTO;
 import com.todo.model.Lane;
 import com.todo.model.Task;
 import com.todo.model.Workspace;
@@ -18,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 class LaneServiceTest {
 
+    @Autowired
+    private TaskService taskService;
     @Autowired
     private LaneService laneService;
     @Autowired
@@ -58,7 +61,8 @@ class LaneServiceTest {
     @Test
     void deleteTask(){
         Lane lane = workspaceService.createLane("Test Lane", workspace);
-        Task task = laneService.createTask("Test Task","Test Description", 0, lane);
+        TaskDTO taskDTO = laneService.createTask("Test Task","Test Description", 0, lane);
+        Task task = taskService.getTaskById(taskDTO.getId());
         assertDoesNotThrow(() -> laneService.deleteTask(task));
         assertEquals(0, lane.getTasks().size());
     }
@@ -66,23 +70,22 @@ class LaneServiceTest {
     @Test
     void updateTaskPosition() {
         Lane lane = workspaceService.createLane("Test Lane", workspace);
-        Task task1 = laneService.createTask("Test Task 1", "Test Description", 0, lane);
-        Task task2 = laneService.createTask("Test Task 2", "Test Description", 1, lane);
-        Task task3 = laneService.createTask("Test Task 3", "Test Description", 2, lane);
+        TaskDTO task1 = laneService.createTask("Test Task 1", "Test Description", 0, lane);
+        TaskDTO task2 = laneService.createTask("Test Task 2", "Test Description", 1, lane);
+        TaskDTO task3 = laneService.createTask("Test Task 3", "Test Description", 2, lane);
         assertEquals(0, task1.getPosition());
         assertEquals(1, task2.getPosition());
         assertEquals(2, task3.getPosition());
-        assertDoesNotThrow(() -> laneService.updateTaskPosition(task1, 2));
+        assertDoesNotThrow(() -> laneService.moveTask(taskService.getTaskById(task1.getId()), lane, lane, 2));
         assertEquals(2, task1.getPosition());
         assertEquals(0, task2.getPosition());
         assertEquals(1, task3.getPosition());
     }
 
     @Test
-    void getLaneByWorkspaceIdAndPosition() {
+    void testGetLaneByWorkspaceIdAndPosition() {
         Lane lane = workspaceService.createLane("Test Lane", workspace);
         Lane foundLane = laneService.getLaneByWorkspaceAndPosition(workspace.getId(), lane.getPosition());
         assertNotNull(foundLane);
     }
-
 }

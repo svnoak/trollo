@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TaskTest {
 
     @Test
-    void getId() {
+    void testGetId() {
         Task task = new Task();
         assertNotNull(task);
         ReflectionTestUtils.setField(task, "id", 1);
@@ -20,7 +20,7 @@ class TaskTest {
     }
 
     @Test
-    void getLaneId() {
+    void testGetLaneId() {
         Task task = new Task();
         assertNotNull(task);
 
@@ -41,7 +41,7 @@ class TaskTest {
     }
 
     @Test
-    void getTaskOrder() {
+    void testGetTaskOrder() {
         Task task = new Task();
         assertNotNull(task);
         task.setPosition(1);
@@ -49,7 +49,7 @@ class TaskTest {
     }
 
     @Test
-    void getName() {
+    void testGetName() {
         Task task = new Task();
         assertNotNull(task);
         task.setName("task");
@@ -57,7 +57,7 @@ class TaskTest {
     }
 
     @Test
-    void getDescription() {
+    void testGetDescription() {
         Task task = new Task();
         assertNotNull(task);
         task.setDescription("description");
@@ -65,24 +65,23 @@ class TaskTest {
     }
 
     @Test
-    void setTaskOrder() {
+    void testSetTaskOrder() {
         Task task = new Task();
         assertNotNull(task);
         assertDoesNotThrow(() -> task.setPosition(1));
     }
 
     @Test
-    void setName() {
+    void testSetName() {
         Task task = new Task();
         assertNotNull(task);
         assertDoesNotThrow(() -> task.setName("name"));
     }
 
     @Test
-    void setDescription() {
+    void testSetDescription() {
         Task task = new Task();
         assertNotNull(task);
         assertDoesNotThrow(() -> task.setDescription("description"));
     }
-
 }

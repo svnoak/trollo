@@ -22,19 +22,19 @@ public class WorkspaceServiceTest {
     private LaneService laneService;
 
     @Test
-    void getWorkspaceById() {
+    void testGetWorkspaceById() {
         int workspaceId = workspaceService.createWorkspace("Test Workspace").getId();
         assertDoesNotThrow(() -> workspaceService.getWorkspaceById(workspaceId));
     }
 
     @Test
-    void updateWorkspace() {
+    void testUpdateWorkspace() {
         Workspace workspace = workspaceService.createWorkspace("Test Workspace");
         assertDoesNotThrow(() -> workspaceService.update(workspace));
     }
 
     @Test
-    void updateLanePosition() {
+    void testMoveLan() {
         Workspace workspace = workspaceService.createWorkspace("Test Workspace");
         Lane lane1 = workspaceService.createLane("Test Lane 1", workspace);
         Lane lane2 = workspaceService.createLane("Test Lane 2", workspace);
@@ -42,7 +42,7 @@ public class WorkspaceServiceTest {
         assertEquals(0, lane1.getPosition());
         assertEquals(1, lane2.getPosition());
         assertEquals(2, lane3.getPosition());
-        assertDoesNotThrow(() -> workspaceService.updateLanePosition(lane1, 2));
+        assertDoesNotThrow(() -> workspaceService.moveLane(lane1, 2));
         assertEquals(2, lane1.getPosition());
         assertEquals(0, lane2.getPosition());
         assertEquals(1, lane3.getPosition());

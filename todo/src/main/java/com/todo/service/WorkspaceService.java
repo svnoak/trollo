@@ -1,5 +1,6 @@
 package com.todo.service;
 
+import com.todo.dto.response.WorkspaceDTO;
 import com.todo.model.Lane;
 import com.todo.model.Workspace;
 import com.todo.repository.LaneRepository;
@@ -7,6 +8,7 @@ import com.todo.repository.WorkspaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -14,10 +16,12 @@ public class WorkspaceService {
 
     private final WorkspaceRepository workspaceRepository;
     private final LaneRepository laneRepository;
+
     @Autowired
     public WorkspaceService(WorkspaceRepository workspaceRepository, LaneRepository laneRepository) {
         this.workspaceRepository = workspaceRepository;
         this.laneRepository = laneRepository;
+
     }
 
     public Workspace getWorkspaceById(int id){
@@ -33,6 +37,10 @@ public class WorkspaceService {
 
     public void deleteWorkspace(Workspace workspace){
         workspaceRepository.delete(workspace);
+    }
+
+    public List<Lane> getAllLanesInWorkspace(Workspace workspace){
+        return workspace.getLanes();
     }
 
     public Lane createLane(String name, Workspace workspace){
@@ -56,7 +64,7 @@ public class WorkspaceService {
         return workspace;
     }
 
-    public Workspace updateLanePosition(Lane lane, int position){
+    public Workspace moveLane(Lane lane, int position){
         Workspace workspace = lane.getWorkspace();
         workspace.getLanes().remove(lane);
         lane.setPosition(position);
@@ -70,8 +78,11 @@ public class WorkspaceService {
         return workspace;
     }
 
-    public List<Workspace> getAllWorkspaces() {
-        return workspaceRepository.findAll();
+    public List<WorkspaceDTO> getAllWorkspaces() {
+        List<Workspace> workspaces = workspaceRepository.findAll();
+        return workspaces.stream()
+                .map(WorkspaceDTO::new)
+                .collect(java.util.stream.Collectors.toList());
     }
 
     private void updateLanePositions(Workspace workspace) {

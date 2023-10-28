@@ -26,7 +26,7 @@ public class TaskRepositoryTest {
     @Autowired
     private WorkspaceRepository workspaceRepository;
     @Test
-    void createTask(){
+    void testCreateTask(){
         Workspace workspace = new Workspace();
         workspaceRepository.save(workspace);
         Lane lane = new Lane();
@@ -38,7 +38,7 @@ public class TaskRepositoryTest {
     }
 
     @Test
-    void getTaskById(){
+    void testGetTaskById(){
         Workspace workspace = new Workspace();
         workspaceRepository.save(workspace);
         Lane lane = new Lane();
@@ -51,7 +51,7 @@ public class TaskRepositoryTest {
     }
 
     @Test
-    void deleteTask(){
+    void testDeleteTask(){
         Workspace workspace = new Workspace();
         workspaceRepository.save(workspace);
         Lane lane = new Lane();

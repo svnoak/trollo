@@ -24,10 +24,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'io.github.cdimascio:java-dotenv:5.2.2'
 	implementation 'com.h2database:h2'
+	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'com.h2database:h2'
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+	testImplementation 'org.mapstruct:mapstruct:1.5.5.Final'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
