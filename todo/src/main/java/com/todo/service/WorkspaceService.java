@@ -1,17 +1,20 @@
 package com.todo.service;
 
-import com.todo.dto.response.LaneDTO;
 import com.todo.dto.response.WorkspaceDTO;
 import com.todo.model.Lane;
 import com.todo.model.Workspace;
 import com.todo.repository.LaneRepository;
 import com.todo.repository.WorkspaceRepository;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service class for the Workspace model.
+ */
+@Hidden
 @Service
 public class WorkspaceService {
 
@@ -25,10 +28,20 @@ public class WorkspaceService {
 
     }
 
+    /**
+     * Get a workspace by id.
+     * @param id
+     * @return
+     */
     public Workspace getWorkspaceById(int id){
         return workspaceRepository.findById(id).orElse(null);
     }
 
+    /**
+     * Create a workspace.
+     * @param name
+     * @return
+     */
     public Workspace createWorkspace(String name){
         Workspace workspace = new Workspace();
         workspace.setName(name);
@@ -36,6 +49,10 @@ public class WorkspaceService {
         return workspace;
     }
 
+    /**
+     * Delete a workspace.
+     * @param workspace
+     */
     public void deleteWorkspace(Workspace workspace){
         workspaceRepository.delete(workspace);
     }

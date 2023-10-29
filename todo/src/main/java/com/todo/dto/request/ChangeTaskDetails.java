@@ -1,9 +1,11 @@
 package com.todo.dto.request;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
+@Hidden
 public class ChangeTaskDetails {
 
     @Schema(description = "Name of the task", example = "New Task", required = false)

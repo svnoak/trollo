@@ -6,6 +6,7 @@ import com.todo.model.Lane;
 import com.todo.model.Task;
 import com.todo.repository.LaneRepository;
 import com.todo.repository.TaskRepository;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.annotations.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Hidden
 @Service
 public class LaneService {
 

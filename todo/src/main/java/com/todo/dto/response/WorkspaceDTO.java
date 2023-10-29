@@ -1,6 +1,7 @@
 package com.todo.dto.response;
 
 import com.todo.model.Workspace;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -8,6 +9,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Hidden
 public class WorkspaceDTO {
 
     @NotNull

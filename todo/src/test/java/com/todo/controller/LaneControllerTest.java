@@ -151,9 +151,8 @@ public class LaneControllerTest {
 
         int newPosition = 2;
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/lanes/"+ lane1.getId() +"/move")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(newPosition)))
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/lanes/"+ lane1.getId() +"/move/" + newPosition)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     }
@@ -161,27 +160,24 @@ public class LaneControllerTest {
     @Test
     public void testMoveLaneNotFound() throws Exception {
         int newPosition = 2;
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/lanes/"+ 1000 +"/move")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(newPosition)))
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/lanes/"+ 1000 +"/move/" + newPosition)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
     public void testMoveLaneBadRequestId() throws Exception {
         int newPosition = 2;
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/lanes/"+ -1 +"/move")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(newPosition)))
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/lanes/"+ -1 +"/move/" + newPosition)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
     public void testMoveLaneBadRequestPosition() throws Exception {
         int newPosition = -1;
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/lanes/"+ lane.getId() +"/move")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(newPosition)))
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/lanes/"+ lane.getId() +"/move/" + newPosition)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 

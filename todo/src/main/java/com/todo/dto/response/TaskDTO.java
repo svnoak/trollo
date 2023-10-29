@@ -1,10 +1,12 @@
 package com.todo.dto.response;
 
 import com.todo.model.Task;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
+@Hidden
 public class TaskDTO {
     @NotNull
     @PositiveOrZero

@@ -8,7 +8,10 @@ import com.todo.model.Workspace;
 import com.todo.service.WorkspaceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Tag(name = "Workspace", description = "Workspace API")
 @RestController
 @RequestMapping("/api/workspaces")
 public class WorkspaceController {
@@ -31,9 +35,9 @@ public class WorkspaceController {
     @GetMapping
     @Operation(summary = "Get all workspaces")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Successfully retrieved all workspaces"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Bad request"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved all workspaces", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<List<WorkspaceDTO>> getAllWorkspaces() {
         try {
@@ -48,10 +52,10 @@ public class WorkspaceController {
     @Operation(summary = "Get workspace by id")
     @Parameter(name = "workspaceId", description = "Id of the workspace to be retrieved", required = true)
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Successfully retrieved workspace"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Bad request"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Workspace not found"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved workspace"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Workspace not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<Workspace> getWorkspaceById(@PathVariable int workspaceId) {
         if(workspaceId < 0) {
@@ -64,10 +68,10 @@ public class WorkspaceController {
     @Operation(summary = "Get all lanes in a workspace")
     @Parameter(name = "workspaceId", description = "Id of the workspace to get all lanes from", required = true)
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Successfully retrieved all lanes in a workspace"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Bad request"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Workspace not found"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved all lanes in a workspace", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400", description = "Bad request", useReturnTypeSchema = false),
+            @ApiResponse(responseCode = "404", description = "Workspace not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<List<LaneDTO>> getAllLanesByWorkspaceId(@PathVariable  int workspaceId) {
         if(workspaceId < 0) {
@@ -88,9 +92,9 @@ public class WorkspaceController {
     @PostMapping
     @Operation(summary = "Create a new workspace")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Successfully created a new workspace"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Bad request"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Internal server error")
+            @ApiResponse(responseCode = "201", description = "Successfully created a new workspace"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<WorkspaceDTO> createWorkspace(@RequestBody CreateWorkspaceRequest workspace) {
         if(workspace == null || workspace.getName() == null || workspace.getName().isEmpty()) {
@@ -109,10 +113,10 @@ public class WorkspaceController {
     @Operation(summary = "Delete a workspace")
     @Parameter(name = "workspaceId", description = "Id of the workspace to be deleted", required = true)
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "Successfully deleted workspace"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Bad request"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Workspace not found"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Internal server error")
+            @ApiResponse(responseCode = "204", description = "Successfully deleted workspace"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Workspace not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<Void> deleteWorkspace(@PathVariable int workspaceId) {
         if(workspaceId < 0) {
