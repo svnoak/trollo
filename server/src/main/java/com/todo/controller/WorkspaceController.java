@@ -69,8 +69,8 @@ public class WorkspaceController {
     @Operation(summary = "Get all lanes in a workspace")
     @Parameter(name = "workspaceId", description = "Id of the workspace to get all lanes from", required = true)
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved all lanes in a workspace", useReturnTypeSchema = true),
-            @ApiResponse(responseCode = "400", description = "Bad request", useReturnTypeSchema = false),
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved all lanes in a workspace"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "404", description = "Workspace not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
@@ -97,7 +97,7 @@ public class WorkspaceController {
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<WorkspaceDTO> createWorkspace(@RequestBody CreateWorkspaceRequest workspace) {
+    public ResponseEntity<WorkspaceDTO> createWorkspace(@RequestBody(required = false) CreateWorkspaceRequest workspace) {
         if(workspace == null || workspace.getName() == null || workspace.getName().isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
