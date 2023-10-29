@@ -1,16 +1,11 @@
 package com.todo.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.todo.dto.response.TaskDTO;
 import com.todo.model.Lane;
-import com.todo.model.Task;
 import com.todo.model.Workspace;
 import com.todo.repository.LaneRepository;
-import com.todo.repository.TaskRepository;
 import com.todo.repository.WorkspaceRepository;
 import com.todo.server.ServerApplication;
 import com.todo.service.LaneService;
-import com.todo.service.TaskService;
 import com.todo.service.WorkspaceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,33 +26,26 @@ public class LaneControllerTest {
     private WorkspaceRepository workspaceRepository;
     private LaneService laneService;
     private LaneRepository laneRepository;
-    private TaskService taskService;
-    private TaskRepository taskRepository;
-
     private Workspace workspace;
     private Lane lane;
-    private TaskDTO task;
 
     @Autowired
-    public LaneControllerTest(MockMvc mockMvc, WorkspaceService workspaceService, LaneService laneService, TaskService taskService, WorkspaceRepository workspaceRepository, LaneRepository laneRepository, TaskRepository taskRepository) {
+    public LaneControllerTest(MockMvc mockMvc, WorkspaceService workspaceService, LaneService laneService, WorkspaceRepository workspaceRepository, LaneRepository laneRepository) {
         this.mockMvc = mockMvc;
         this.workspaceService = workspaceService;
         this.laneService = laneService;
-        this.taskService = taskService;
         this.workspaceRepository = workspaceRepository;
         this.laneRepository = laneRepository;
-        this.taskRepository = taskRepository;
     }
 
     @BeforeEach
     void setup() {
         workspaceRepository.deleteAll();
         laneRepository.deleteAll();
-        taskRepository.deleteAll();
 
         workspace = workspaceService.createWorkspace("Test Workspace");
         lane = workspaceService.createLane("Test Lane", workspace.getId());
-        task = laneService.createTask("Test Task", "Test Description", lane.getId());
+        laneService.createTask("Test Task", "Test Description", lane.getId());
     }
 
     @Test

@@ -3,7 +3,6 @@ package com.todo.service;
 import com.todo.dto.request.ChangeTaskDetails;
 import com.todo.dto.response.TaskDTO;
 import com.todo.model.Lane;
-import com.todo.model.Task;
 import com.todo.model.Workspace;
 import com.todo.server.ServerApplication;
 import org.junit.jupiter.api.BeforeEach;

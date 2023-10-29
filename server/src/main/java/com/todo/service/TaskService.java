@@ -2,15 +2,12 @@ package com.todo.service;
 
 import com.todo.dto.request.ChangeTaskDetails;
 import com.todo.dto.response.TaskDTO;
-import com.todo.model.Lane;
 import com.todo.model.Task;
 import com.todo.repository.TaskRepository;
 import io.swagger.v3.oas.annotations.Hidden;
-import org.h2.mvstore.tx.TransactionStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

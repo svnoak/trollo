@@ -16,11 +16,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest(classes = ServerApplication.class)
 public class WorkspaceServiceTest {
 
-    @Autowired
     private WorkspaceService workspaceService;
 
     @Autowired
-    private LaneService laneService;
+    public WorkspaceServiceTest(WorkspaceService workspaceService) {
+        this.workspaceService = workspaceService;
+    }
 
     @Test
     void testGetWorkspaceById() {

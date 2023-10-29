@@ -5,7 +5,6 @@ import com.todo.dto.response.LaneDTO;
 import com.todo.dto.response.TaskDTO;
 import com.todo.dto.response.WorkspaceDTO;
 import com.todo.model.Lane;
-import com.todo.model.Workspace;
 import com.todo.service.LaneService;
 import com.todo.service.TaskService;
 import com.todo.service.WorkspaceService;

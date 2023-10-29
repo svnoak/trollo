@@ -6,7 +6,6 @@ import com.todo.model.Workspace;
 import com.todo.repository.LaneRepository;
 import com.todo.repository.WorkspaceRepository;
 import io.swagger.v3.oas.annotations.Hidden;
-import io.swagger.v3.oas.annotations.Parameter;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

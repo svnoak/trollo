@@ -47,8 +47,7 @@ class LaneServiceTest {
     @Test
     void getLaneById() {
         Lane lane = workspaceService.createLane("Test Lane", workspace.getId());
-        int laneId = 1;
-        Lane foundLane = laneService.getLaneById(laneId);
+        Lane foundLane = laneService.getLaneById(lane.getId());
         assertNotNull(foundLane);
     }
 

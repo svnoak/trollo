@@ -4,13 +4,9 @@ package com.todo.controller;
 import com.todo.dto.request.ChangeTaskDetails;
 import com.todo.dto.request.CreateTaskRequest;
 import com.todo.dto.request.MoveTaskRequest;
-import com.todo.dto.response.LaneDTO;
 import com.todo.dto.response.TaskDTO;
-import com.todo.model.Lane;
-import com.todo.model.Task;
 import com.todo.service.LaneService;
 import com.todo.service.TaskService;
-import com.todo.service.WorkspaceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -18,13 +14,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collections;
-import java.util.List;
 
 @Tag(name = "Task", description = "Task API")
 @RestController
@@ -32,13 +24,11 @@ import java.util.List;
 public class TaskController {
 
     private TaskService taskService;
-    private WorkspaceService workspaceService;
     private LaneService laneService;
 
     @Autowired
-    public TaskController(TaskService taskService, WorkspaceService workspaceService, LaneService laneService) {
+    public TaskController(TaskService taskService, LaneService laneService) {
         this.taskService = taskService;
-        this.workspaceService = workspaceService;
         this.laneService = laneService;
     }
 

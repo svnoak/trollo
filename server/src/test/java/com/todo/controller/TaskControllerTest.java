@@ -1,14 +1,11 @@
 package com.todo.controller;
 
-import com.todo.dto.request.ChangeTaskDetails;
 import com.todo.dto.request.CreateTaskRequest;
 import com.todo.dto.response.TaskDTO;
 import com.todo.model.Lane;
-import com.todo.model.Task;
 import com.todo.model.Workspace;
 import com.todo.server.ServerApplication;
 import com.todo.service.LaneService;
-import com.todo.service.TaskService;
 import com.todo.service.WorkspaceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,18 +25,15 @@ public class TaskControllerTest {
     private MockMvc mockMvc;
     private WorkspaceService workspaceService;
     private LaneService laneService;
-    private TaskService taskService;
-
     private TaskDTO task;
     private Lane lane;
     private Workspace workspace;
 
     @Autowired
-    public TaskControllerTest(MockMvc mockMvc, WorkspaceService workspaceService, LaneService laneService, TaskService taskService) {
+    public TaskControllerTest(MockMvc mockMvc, WorkspaceService workspaceService, LaneService laneService) {
         this.mockMvc = mockMvc;
         this.workspaceService = workspaceService;
         this.laneService = laneService;
-        this.taskService = taskService;
     }
 
     @BeforeEach

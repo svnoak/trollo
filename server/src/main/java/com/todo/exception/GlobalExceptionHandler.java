@@ -1,6 +1,5 @@
 package com.todo.exception;
 
-import org.hibernate.ObjectNotFoundException;
 import org.springframework.data.crossstore.ChangeSetPersister.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
