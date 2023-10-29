@@ -7,6 +7,11 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+/**
+ * Security configuration in use
+ * Permits all requests right now (for testing purposes)
+ * TODO: Implement proper security
+ */
 @Configuration
 public class SecurityConfiguration {
 

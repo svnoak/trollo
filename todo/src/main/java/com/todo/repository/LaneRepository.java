@@ -9,6 +9,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Repository for the Lane model.
+ */
 @Hidden
 @Repository
 public interface LaneRepository extends JpaRepository<Lane, Integer> {

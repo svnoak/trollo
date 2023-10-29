@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Repository for the Workspace model.
+ */
 @Hidden
 @Repository
 public interface WorkspaceRepository extends JpaRepository<Workspace, Integer> {

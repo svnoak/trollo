@@ -71,8 +71,9 @@ public class LaneService {
      * Create a task.
      * @param name The name of the task.
      * @param description The description of the task.
-     * @param
+     * @param laneId The id of the lane the task belongs to.
      * @return The created lane.
+     * @throws ObjectNotFoundException If the lane with the given id does not exist.
      */
     public TaskDTO createTask(String name, String description, int laneId) throws ObjectNotFoundException{
         Lane lane = laneRepository.findById(laneId).orElse(null);
@@ -88,6 +89,11 @@ public class LaneService {
         return new TaskDTO(task);
     }
 
+    /**
+     * Delete a task.
+     * @param taskId The id of the task to be deleted.
+     * @throws ObjectNotFoundException If the task with the given id does not exist.
+     */
     public void deleteTask(int taskId) throws ObjectNotFoundException {
         Task task = taskRepository.findById(taskId).orElse(null);
         if(task == null) throw new ObjectNotFoundException(taskId, "Task");
@@ -98,6 +104,14 @@ public class LaneService {
         taskRepository.delete(task);
     }
 
+    /**
+     * Move a task to a new position in a lane.
+     * @param taskId The id of the task to be moved.
+     * @param sourceLaneId The id of the lane the task is currently in.
+     * @param targetLaneId The id of the lane the task should be moved to.
+     * @param newTaskPosition The position the task should be moved to.
+     * @throws ObjectNotFoundException If the task or one of the lanes does not exist.
+     */
     public void moveTask(int taskId, int sourceLaneId, int targetLaneId, int newTaskPosition) throws ObjectNotFoundException{
         Task task = taskRepository.findById(taskId).orElse(null);
         Lane sourceLane = laneRepository.findById(sourceLaneId).orElse(null);
@@ -118,12 +132,21 @@ public class LaneService {
         laneRepository.save(targetLane);
     }
 
+    /**
+     * Update the positions of all lanes in a workspace.
+     * @param lane The lane in which tasks are rearranged
+     */
     private void updateTaskPositions(Lane lane){
         for(int i = 0; i < lane.getTasks().size(); i++){
             lane.getTasks().get(i).setPosition(i);
         }
     }
 
+    /**
+     * Update name of the Lane
+     * @param updatedLane The lane with the updated name
+     * @return The updated lane
+     */
     public Lane updateLaneName(Lane updatedLane) throws ObjectNotFoundException{
         Lane lane = laneRepository.findById(updatedLane.getId()).orElse(null);
         if (lane == null) throw new ObjectNotFoundException(updatedLane.getId(), "Lane");

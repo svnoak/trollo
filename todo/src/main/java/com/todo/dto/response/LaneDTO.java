@@ -8,6 +8,12 @@ import jakarta.validation.constraints.PositiveOrZero;
 
 import java.util.List;
 
+/**
+ * DTO for the Lane.
+ * This DTO is used to send the lanes to the client.
+ * The id, name, position and workspaceId are required.
+ * The tasks are optional.
+ */
 @Hidden
 public class LaneDTO {
 

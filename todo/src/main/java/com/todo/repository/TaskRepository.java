@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Repository for the Task model.
+ */
 @Hidden
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Integer> {
