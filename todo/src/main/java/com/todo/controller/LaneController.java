@@ -9,6 +9,10 @@ import com.todo.model.Workspace;
 import com.todo.service.LaneService;
 import com.todo.service.TaskService;
 import com.todo.service.WorkspaceService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +36,14 @@ public class LaneController {
     }
 
     @GetMapping("/{laneId}")
+    @Operation(summary = "Get lane by id")
+    @Parameter(name = "laneId", description = "Id of the lane to be retrieved", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved lane"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Lane not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<LaneDTO> getLaneById(@PathVariable int laneId) {
         if(laneId < 0) {
             return ResponseEntity.badRequest().build();
@@ -40,6 +52,14 @@ public class LaneController {
     }
 
     @GetMapping("/{laneId}/tasks")
+    @Operation(summary = "Get all tasks in a lane")
+    @Parameter(name = "laneId", description = "Id of the lane to get tasks from", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved tasks"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Lane not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<List<TaskDTO>> getAllTasksByLaneId(@PathVariable int laneId) {
         if(laneId < 0) {
             return ResponseEntity.badRequest().build();
@@ -52,6 +72,13 @@ public class LaneController {
     }
 
     @PostMapping
+    @Operation(summary = "Create a new lane")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Successfully created lane"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Workspace not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<LaneDTO> createLane(@RequestBody CreateLaneRequest createLaneRequest) {
         int workspaceId = createLaneRequest.getWorkspaceId();
         String laneName = createLaneRequest.getName();
@@ -72,6 +99,14 @@ public class LaneController {
     }
 
     @PatchMapping("/{laneId}/name")
+    @Operation(summary = "Update lane name")
+    @Parameter(name = "laneId", description = "Id of the lane to be updated", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully updated lane name"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Lane not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<LaneDTO> updateLaneName(@PathVariable int laneId, @RequestBody(required = false) String name) {
         if(laneId < 0 || name == null || name.isEmpty() || name.isBlank() || name.trim().isEmpty()) {
             return ResponseEntity.badRequest().build();
@@ -92,6 +127,14 @@ public class LaneController {
     }
 
     @DeleteMapping("/{laneId}")
+    @Operation(summary = "Delete lane")
+    @Parameter(name = "laneId", description = "Id of the lane to be deleted", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Successfully deleted lane"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Lane not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<Lane> deleteLane(@PathVariable int laneId) {
         if(laneId < 0) {
             return ResponseEntity.badRequest().build();
@@ -108,8 +151,17 @@ public class LaneController {
         }
     }
 
-    @PostMapping("/{laneId}/move")
-    public ResponseEntity<WorkspaceDTO> moveLane(@PathVariable int laneId, @RequestBody int newPosition) {
+    @PostMapping("/{laneId}/move/{newPosition}")
+    @Operation(summary = "Move lane to another position")
+    @Parameter(name = "laneId", description = "Id of the lane to be moved", required = true)
+    @Parameter(name = "newPosition", description = "New position of the lane", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully moved lane to another position"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Lane not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<WorkspaceDTO> moveLane(@PathVariable int laneId, @PathVariable int newPosition) {
         if(laneId < 0 || newPosition < 0) {
             return ResponseEntity.badRequest().build();
         }
