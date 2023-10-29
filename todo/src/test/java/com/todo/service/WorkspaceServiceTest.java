@@ -3,6 +3,7 @@ package com.todo.service;
 import com.todo.model.Lane;
 import com.todo.model.Workspace;
 import com.todo.server.ServerApplication;
+import org.hibernate.ObjectNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,9 +37,9 @@ public class WorkspaceServiceTest {
     @Test
     void testMoveLan() {
         Workspace workspace = workspaceService.createWorkspace("Test Workspace");
-        Lane lane1 = workspaceService.createLane("Test Lane 1", workspace);
-        Lane lane2 = workspaceService.createLane("Test Lane 2", workspace);
-        Lane lane3 = workspaceService.createLane("Test Lane 3", workspace);
+        Lane lane1 = workspaceService.createLane("Test Lane 1", workspace.getId());
+        Lane lane2 = workspaceService.createLane("Test Lane 2", workspace.getId());
+        Lane lane3 = workspaceService.createLane("Test Lane 3", workspace.getId());
         assertEquals(0, lane1.getPosition());
         assertEquals(1, lane2.getPosition());
         assertEquals(2, lane3.getPosition());
@@ -46,5 +47,16 @@ public class WorkspaceServiceTest {
         assertEquals(2, lane1.getPosition());
         assertEquals(0, lane2.getPosition());
         assertEquals(1, lane3.getPosition());
+    }
+
+    @Test
+    void testDeleteWorkspace() {
+        Workspace workspace = workspaceService.createWorkspace("Test Workspace");
+        assertDoesNotThrow(() -> workspaceService.deleteWorkspace(workspace.getId()));
+    }
+
+    @Test
+    void testDeleteWorkspaceNotFound() {
+        assertThrows(ObjectNotFoundException.class, () -> workspaceService.deleteWorkspace(-1));
     }
 }

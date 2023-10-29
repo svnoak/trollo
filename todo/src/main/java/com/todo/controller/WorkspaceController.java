@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -122,14 +123,13 @@ public class WorkspaceController {
         if(workspaceId < 0) {
             return ResponseEntity.badRequest().build();
         }
-        Workspace workspace = workspaceService.getWorkspaceById(workspaceId);
-        if (workspace == null) {
-            return ResponseEntity.notFound().build();
-        }
         try {
-            workspaceService.deleteWorkspace(workspace);
+            workspaceService.deleteWorkspace(workspaceId);
             return ResponseEntity.noContent().build();
-        } catch (Exception e) {
+        } catch (ObjectNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

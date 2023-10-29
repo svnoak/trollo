@@ -64,23 +64,24 @@ public class LaneService {
         taskRepository.delete(task);
     }
 
-    public LaneDTO moveTask(int taskId, int sourceLaneId, int targetLaneId, int newTaskPosition){
+    public void moveTask(int taskId, int sourceLaneId, int targetLaneId, int newTaskPosition) throws ObjectNotFoundException{
         Task task = taskRepository.findById(taskId).orElse(null);
         Lane sourceLane = laneRepository.findById(sourceLaneId).orElse(null);
         Lane targetLane = laneRepository.findById(targetLaneId).orElse(null);
-        if(task == null || sourceLane == null || targetLane == null) return null;
+
+        if(task == null) throw new ObjectNotFoundException(taskId, "Task");
+        if(sourceLane == null) throw new ObjectNotFoundException(sourceLaneId, "Lane");
+        if(targetLane == null) throw new ObjectNotFoundException(targetLaneId, "Lane");
+
         sourceLane.getTasks().remove(task);
         targetLane.getTasks().add(newTaskPosition, task);
+
         task.setLane(targetLane);
         updateTaskPositions(sourceLane);
         updateTaskPositions(targetLane);
+
         laneRepository.save(sourceLane);
         laneRepository.save(targetLane);
-        List<Lane> lanes = List.of(sourceLane, targetLane);
-        return lanes.stream()
-                .map(LaneDTO::new)
-                .findFirst()
-                .orElse(null);
     }
 
     private void updateTaskPositions(Lane lane){

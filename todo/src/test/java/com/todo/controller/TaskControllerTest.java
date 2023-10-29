@@ -45,7 +45,7 @@ public class TaskControllerTest {
     @BeforeEach
     void setup() {
         workspace = workspaceService.createWorkspace("Test Workspace");
-        lane = workspaceService.createLane("Test Lane", workspace);
+        lane = workspaceService.createLane("Test Lane", workspace.getId());
         task = laneService.createTask("Test Task", "Test Description", 0, lane);
     }
 

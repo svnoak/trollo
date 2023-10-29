@@ -118,10 +118,20 @@ public class TaskController {
             @ApiResponse(responseCode = "404", description = "Task not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<LaneDTO>> moveTask(@PathVariable int taskId, @RequestBody MoveTaskRequest moveTaskRequest) {
+    public ResponseEntity<Void> moveTask(@PathVariable int taskId, @RequestBody MoveTaskRequest moveTaskRequest) {
         try {
-            return ResponseEntity.ofNullable(Collections.singletonList(laneService.moveTask(taskId, moveTaskRequest.getSourceLaneId(), moveTaskRequest.getTargetLaneId(), moveTaskRequest.getNewTaskPosition())));
-        } catch (IllegalArgumentException e) {
+            if(taskId < 0) {
+                return ResponseEntity.badRequest().build();
+            }
+            if( moveTaskRequest == null ) {
+                return ResponseEntity.badRequest().build();
+            }
+            laneService.moveTask(taskId, moveTaskRequest.getSourceLaneId(), moveTaskRequest.getTargetLaneId(), moveTaskRequest.getNewTaskPosition());
+            return ResponseEntity.ok().build();
+        } catch (ObjectNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+        catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

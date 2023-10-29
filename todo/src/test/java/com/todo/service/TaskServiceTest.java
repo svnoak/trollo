@@ -32,7 +32,7 @@ public class TaskServiceTest {
     @BeforeEach
     void setUp(){
         workspace = workspaceService.createWorkspace("Test Workspace");
-        lane = workspaceService.createLane("Lane",workspace);
+        lane = workspaceService.createLane("Lane",workspace.getId());
     }
     @Test
     void testCreateTask() {

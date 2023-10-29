@@ -56,7 +56,7 @@ public class LaneControllerTest {
         taskRepository.deleteAll();
 
         workspace = workspaceService.createWorkspace("Test Workspace");
-        lane = workspaceService.createLane("Test Lane", workspace);
+        lane = workspaceService.createLane("Test Lane", workspace.getId());
         task = laneService.createTask("Test Task", "Test Description", 0, lane);
     }
 
@@ -145,9 +145,9 @@ public class LaneControllerTest {
 
     @Test
     public void testMoveLane() throws Exception {
-        Lane lane1 = workspaceService.createLane("Test Lane 1", workspace);
-        workspaceService.createLane("Test Lane 2", workspace);
-        workspaceService.createLane("Test Lane 3", workspace);
+        Lane lane1 = workspaceService.createLane("Test Lane 1", workspace.getId());
+        workspaceService.createLane("Test Lane 2", workspace.getId());
+        workspaceService.createLane("Test Lane 3", workspace.getId());
 
         int newPosition = 2;
 
