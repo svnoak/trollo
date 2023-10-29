@@ -10,11 +10,25 @@ export const fetchTasksAsync = createAsyncThunk(
     }
 );
 
-export const renameTaskAsync = createAsyncThunk(
-    "task/renameTask",
+export const updateTaskAsync = createAsyncThunk(
+    "task/updateTask",
     async (task: Task) => {
         const response = await fetch(baseUrl + "/api/tasks/" + task.id, {
             method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ name: task.name, description: task.description }),
+        });
+        return await response.json();
+    }
+);
+
+export const createTaskAsync = createAsyncThunk(
+    "task/createTask",
+    async (task: Task) => {
+        const response = await fetch(baseUrl + "/api/tasks", {
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -24,15 +38,25 @@ export const renameTaskAsync = createAsyncThunk(
     }
 );
 
-export const updateTaskDescriptionAsync = createAsyncThunk(
-    "task/updateTaskDescription",
+export const deleteTaskAsync = createAsyncThunk(
+    "task/deleteTask",
     async (task: Task) => {
         const response = await fetch(baseUrl + "/api/tasks/" + task.id, {
+            method: "DELETE",
+        });
+        return await response.json();
+    }
+);
+
+export const moveTaskAsync = createAsyncThunk(
+    "task/moveTask",
+    async (task: Task) => {
+        const response = await fetch(baseUrl + "/api/tasks/" + task.id + "/move", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ description: task.description }),
+            body: JSON.stringify({ sourceLaneId: task.laneId, targetLaneId: task.laneId, newTaskPosition: task.position }),
         });
         return await response.json();
     }

@@ -1,16 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
-  addTaskAsync,
-  deleteTaskAsync,
   fetchAllWorkspaceLanes,
-  moveTaskAsync,
   renameLaneAsync,
+  createLaneAsync,
+  deleteLaneAsync,
+  moveLaneAsync,
 } from "../thunks/laneThunk";
+import { deleteTaskAsync, fetchTasksAsync, moveTaskAsync, updateTaskAsync } from "../thunks/taskThunk";
 
 export type LaneState = {
-    lanes: Lane[];
-    lane: Lane | null;
-    };
+  lanes: Lane[];
+  lane: Lane | null;
+};
 
 const laneSlice = createSlice({
   name: "lanes",
@@ -19,7 +20,7 @@ const laneSlice = createSlice({
     lane: null as Lane | null,
   },
   reducers: {
-    addTask(state, action) {
+    createTask(state, action) {
       const { id, task } = action.payload;
       const lane = state.lanes.find((lane) => lane.id === id);
       if (lane) {
@@ -50,6 +51,32 @@ const laneSlice = createSlice({
       }
     },
 
+    updateTask(state, action) {
+      const { id, name, description, laneId } = action.payload;
+      const task = state.lanes.find((lane) => lane.id === laneId)?.tasks.find((task) => task.id === id);
+      if (task) {
+        task.name = name;
+        task.description = description;
+      }
+    },
+
+    createLane(state, action) {
+      state.lanes.push(action.payload);
+    },
+
+    deleteLane(state: { lanes: Lane[] }, action: { payload: number }) {
+      const id = action.payload;
+      state.lanes = state.lanes.filter(
+        (lane: { id: number }) => lane.id !== id
+      );
+    },
+
+    moveLane(state, action) {
+      const { sourceIndex, destinationIndex } = action.payload;
+      const lane = state.lanes.splice(sourceIndex, 1)[0];
+      state.lanes.splice(destinationIndex, 0, lane);
+    },
+
     renameLane(state, action) {
       const { id, name } = action.payload;
       const lane = state.lanes.find((lane) => lane.id === id);
@@ -58,12 +85,11 @@ const laneSlice = createSlice({
       }
     },
   },
+
   extraReducers: (builder) => {
-    builder.addCase(addTaskAsync.fulfilled, (state, action) => {
-      const { id, task } = action.payload;
-      const lane = state.lanes.find((lane) => lane.id === id);
-      if (lane) {
-        lane.tasks.push(task);
+    builder.addCase(fetchTasksAsync.fulfilled, (state, action) => {
+      if (state.lanes) {
+        state.lanes = action.payload;
       }
     });
 
@@ -90,6 +116,15 @@ const laneSlice = createSlice({
       }
     });
 
+    builder.addCase(updateTaskAsync.fulfilled, (state, action) => {
+      const { id, name, description, laneId } = action.payload;
+      const task = state.lanes.find((lane) => lane.id === laneId)?.tasks.find((task) => task.id === id);
+      if (task) {
+        task.name = name;
+        task.description = description;
+      }
+    });
+
     builder.addCase(renameLaneAsync.fulfilled, (state, action) => {
       const { id, name } = action.payload;
       const lane = state.lanes.find((lane) => lane.id === id);
@@ -99,12 +134,29 @@ const laneSlice = createSlice({
     });
 
     builder.addCase(fetchAllWorkspaceLanes.fulfilled, (state, action) => {
-      if(state.lanes) {
+      if (state.lanes) {
         state.lanes = action.payload;
       }
+    });
+
+    builder.addCase(createLaneAsync.fulfilled, (state, action) => {
+        state.lanes.push(action.payload);
+    });
+
+    builder.addCase(deleteLaneAsync.fulfilled, (state, action) => {
+      const id: number = action.payload as unknown as number;
+        state.lanes = state.lanes.filter(
+          (lane: { id: number }) => lane.id !== id
+        );
+    });
+
+    builder.addCase(moveLaneAsync.fulfilled, (state, action) => {
+      const { sourceIndex, destinationIndex } = action.payload;
+      const lane = state.lanes.splice(sourceIndex, 1)[0];
+      state.lanes.splice(destinationIndex, 0, lane);
     });
   },
 });
 
-export const { addTask, deleteTask, moveTask, renameLane } = laneSlice.actions;
+export const { createTask, deleteTask, moveTask, renameLane } = laneSlice.actions;
 export default laneSlice.reducer;

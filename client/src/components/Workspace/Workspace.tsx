@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { fetchAllWorkspaceLanes } from "../../store/thunks/laneThunk";
 import { RootState } from "../../store/configureStore";
-import { addLaneAsync } from "../../store/thunks/workspaceThunk";
+import { createLaneAsync } from "../../store/thunks/laneThunk";
 
 export default function Workspace() {
   const dispatch = useDispatch<ThunkDispatch<unknown, unknown, any>>();
@@ -13,23 +13,24 @@ export default function Workspace() {
   const activeWorkspace = useSelector((state: RootState) => state.workspace.workspace);
   
   function loadLanes() {
+    console.log("Loading lanes");
+    console.log(activeWorkspace);
     if(!activeWorkspace) return;
     dispatch(fetchAllWorkspaceLanes(activeWorkspace.id));
   }
 
   function handleAddLane() {
     console.log("Add lane");
+    console.log(activeWorkspace);
     if(!activeWorkspace) return;
-    dispatch(addLaneAsync(activeWorkspace.id));
+    dispatch(createLaneAsync(activeWorkspace.id));
   }
 
   useEffect(() => {
     loadLanes();
-  }, []);
+  }, [dispatch, activeWorkspace]);
 
   useEffect(() => {}, [lanes]);
-
-  console.log(lanes);
 
   const PlaceHolderWorkspace = () => {
     return(
@@ -43,11 +44,13 @@ export default function Workspace() {
         <ul className="lanes">
           {lanes && lanes.length > 0 && (
             lanes.map((lane: Lane) => (
-              <Lane lane={lane} />
+              <Lane key={lane.id} lane={lane} />
             ))
           )}
+          <li>
+            <button className="add-lane" onClick={handleAddLane}>+ Add another lane</button>
+          </li>
         </ul>
-        <button className="add-lane" onClick={handleAddLane}>+ Add another lane</button>
       </div>
     )
   }

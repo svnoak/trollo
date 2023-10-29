@@ -39,30 +39,6 @@ export const createWorkspaceAsync = createAsyncThunk(
     }
 );
 
-export const addLaneAsync = createAsyncThunk(
-    "workspace/addLane",
-    async (workspaceId: number) => {
-        const response = await fetch(baseUrl + "/api/workspaces/" + workspaceId + "/lanes", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ name: "New Lane" }),
-        });
-        return await response.json();
-    }
-);
-
-export const deleteLaneAsync = createAsyncThunk(
-    "workspace/deleteLane",
-    async ({ workspaceId, laneId }: { workspaceId: number, laneId: number }) => {
-        const response = await fetch(baseUrl + "/api/workspaces/" + workspaceId + "/lanes/" + laneId, {
-            method: "DELETE",
-        });
-        return response;
-    }
-);
-
 export const updateWorkspaceNameAsync = createAsyncThunk(
     "workspace/updateWorkspaceName",
     async (workspace: {id: number, name: string}) => {

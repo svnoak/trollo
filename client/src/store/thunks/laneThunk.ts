@@ -2,41 +2,31 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 const baseUrl = "http://localhost:3000";
 
-export const addTaskAsync = createAsyncThunk(
-    "lane/addTask",
-    async (task: Task) => {
-        const response = await fetch(baseUrl + "/api/lanes/" + task.laneId + "/tasks", {
+export const createLaneAsync = createAsyncThunk(
+    "lane/createLane",
+    async (workspaceId: number) => {
+        const response = await fetch(baseUrl + "/api/lanes", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ name: task.name }),
+            body: JSON.stringify({ workspaceId: workspaceId, name: "New Lane" }),
         });
+        if(!response.ok) {
+            throw new Error("Error creating lane");
+        }
+        console.log(await response.json());
         return await response.json();
     }
 );
 
-export const deleteTaskAsync = createAsyncThunk(
-    "lane/deleteTask",
-    async (task: Task) => {
-        const response = await fetch(baseUrl + "/api/lanes/" + task.laneId + "/tasks/" + task.id, {
+export const deleteLaneAsync = createAsyncThunk(
+    "lane/deleteLane",
+    async (laneId: number ) => {
+        const response = await fetch(baseUrl + "/api/lanes" + laneId, {
             method: "DELETE",
         });
-        return await response.json();
-    }
-);
-
-export const moveTaskAsync = createAsyncThunk(
-    "lane/moveTask",
-    async (task: Task) => {
-        const response = await fetch(baseUrl + "/api/lanes/" + task.laneId + "/tasks/" + task.id, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ sourceLaneId: task.laneId, targetLaneId: task.laneId, newTaskPosition: task.position }),
-        });
-        return await response.json();
+        return response;
     }
 );
 
@@ -44,7 +34,7 @@ export const renameLaneAsync = createAsyncThunk(
     "lane/renameLane",
     async (lane: Lane) => {
         const response = await fetch(baseUrl + "/api/lanes/" + lane.id, {
-            method: "PUT",
+            method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -54,8 +44,21 @@ export const renameLaneAsync = createAsyncThunk(
     }
 );
 
+export const moveLaneAsync = createAsyncThunk(
+    "lane/moveLane",
+    async ({lane, newPosition}: {lane: Lane, newPosition: number}) => {
+        const response = await fetch(baseUrl + "/api/lanes/" + lane.id + "/move/" + newPosition, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        return await response.json();
+    }
+);
+
 export const fetchAllWorkspaceLanes = createAsyncThunk(
-    "workspace/fetchAllWorkspaceLanes",
+    "lane/fetchAllWorkspaceLanes",
     async (workspaceId: number) => {
         const response = await fetch(baseUrl + "/api/workspaces/" + workspaceId + "/lanes");
         return await response.json();

@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { addLaneAsync, createWorkspaceAsync, deleteLaneAsync, deleteWorkspaceAsync, fetchWorkspaces, updateWorkspaceNameAsync } from "../thunks/workspaceThunk";
+import { createWorkspaceAsync, deleteWorkspaceAsync, fetchWorkspaces, updateWorkspaceNameAsync } from "../thunks/workspaceThunk";
 
 export type WorkspaceState = {
   workspacesArray: Workspace[];
@@ -31,28 +31,6 @@ const workspaceSlice = createSlice({
       );
     },
 
-    addLane(state, action) {
-        if(state.workspace) {
-            state.workspace.lanes.push(action.payload);
-        }
-    },
-
-    deleteLane(state, action) {
-        const id = action.payload;
-        if(state.workspace) {
-            state.workspace.lanes = state.workspace.lanes.filter(
-                (lane: { id: number }) => lane.id !== id
-            );
-        }
-    },
-
-    moveLane(state, action) {
-        const { sourceIndex, destinationIndex } = action.payload;
-        if(state.workspace) {
-            const lane = state.workspace.lanes.splice(sourceIndex, 1)[0];
-            state.workspace.lanes.splice(destinationIndex, 0, lane);
-        }
-    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchWorkspaces.fulfilled, (state, action) => {
@@ -71,21 +49,6 @@ const workspaceSlice = createSlice({
       state.workspacesArray.push(action.payload);
     });
 
-    builder.addCase(addLaneAsync.fulfilled, (state, action) => {
-      if(state.workspace) {
-        state.workspace.lanes.push(action.payload);
-      }
-    });
-
-    builder.addCase(deleteLaneAsync.fulfilled, (state, action) => {
-      const id: number = action.payload as unknown as number;
-      if(state.workspace) {
-        state.workspace.lanes = state.workspace.lanes.filter(
-          (lane: { id: number }) => lane.id !== id
-        );
-      }
-    });
-
     builder.addCase(updateWorkspaceNameAsync.fulfilled, (state, action) => {
       const { id, name } = action.payload;
       const workspace = state.workspacesArray.find(
@@ -102,9 +65,6 @@ export const {
   deleteWorkspace,
   createWorkspace,
   setActiveWorkspace,
-  addLane,
-  deleteLane,
-  moveLane,
 } = workspaceSlice.actions;
 
 export default workspaceSlice.reducer;
