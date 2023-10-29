@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Service class for the Lane model.
+ */
 @Hidden
 @Service
 public class LaneService {
@@ -22,33 +25,64 @@ public class LaneService {
     private final LaneRepository laneRepository;
     private final TaskRepository taskRepository;
 
+    /**
+     * Constructor for the LaneService class.
+     * @param laneRepository The repository for the Lane model.
+     * @param taskRepository The repository for the Task model.
+     */
     @Autowired
     public LaneService(LaneRepository laneRepository, TaskRepository taskRepository) {
         this.laneRepository = laneRepository;
         this.taskRepository = taskRepository;
     }
 
+    /**
+     * Create a lane.
+     * @param name The name of the lane.
+     * @param workspaceId The id of the workspace the lane belongs to.
+     * @return The created lane.
+     */
     public Lane getLaneById(int id){
         return laneRepository.findById(id).orElse(null);
     }
 
+    /**
+     * Get a lane by its id and return it as a DTO.
+     * @param id The id of the lane to be retrieved.
+     * @return The lane with the given id.
+     * @throws ObjectNotFoundException If the lane with the given id does not exist.
+     */
     public LaneDTO getLaneByIdAsDTO(int id) throws ObjectNotFoundException{
         Lane lane = laneRepository.findById(id).orElse(null);
         if(lane == null) throw new ObjectNotFoundException(id, "Lane");
         return new LaneDTO(lane);
     }
 
+    /**
+     * Get all lanes belonging to a workspace.
+     * @param workspaceId The id of the workspace.
+     * @return A list of all lanes belonging to the workspace.
+     */
     public List<Lane> getLanesByWorkspaceId(int workspaceId){
         return laneRepository.findByWorkspaceId(workspaceId);
     }
 
-    public TaskDTO createTask(String name, String description, int position, Lane lane){
+    /**
+     * Create a task.
+     * @param name The name of the task.
+     * @param description The description of the task.
+     * @param
+     * @return The created lane.
+     */
+    public TaskDTO createTask(String name, String description, int laneId) throws ObjectNotFoundException{
+        Lane lane = laneRepository.findById(laneId).orElse(null);
+        if(lane == null) throw new ObjectNotFoundException(laneId, "Lane");
         Task task = new Task();
         if(name == null || name.isEmpty()) name = "New Task";
         task.setName(name);
         task.setLane(lane);
         task.setDescription(description);
-        lane.getTasks().add(position, task);
+        lane.getTasks().add(lane.getTasks().size(), task);
         updateTaskPositions(lane);
         taskRepository.save(task);
         return new TaskDTO(task);

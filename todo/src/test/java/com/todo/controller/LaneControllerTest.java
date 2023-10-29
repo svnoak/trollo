@@ -57,7 +57,7 @@ public class LaneControllerTest {
 
         workspace = workspaceService.createWorkspace("Test Workspace");
         lane = workspaceService.createLane("Test Lane", workspace.getId());
-        task = laneService.createTask("Test Task", "Test Description", 0, lane);
+        task = laneService.createTask("Test Task", "Test Description", lane.getId());
     }
 
     @Test

@@ -36,25 +36,25 @@ public class TaskServiceTest {
     }
     @Test
     void testCreateTask() {
-        assertDoesNotThrow(() -> laneService.createTask("Test Task", "Test Description",lane.getTasks().size(), lane));
+        assertDoesNotThrow(() -> laneService.createTask("Test Task", "Test Description", lane.getId()));
     }
 
     @Test
     void testUpdateTask() {
-        TaskDTO taskDTO = laneService.createTask("Test Task", "Test Description", lane.getTasks().size(), lane);
+        TaskDTO taskDTO = laneService.createTask("Test Task", "Test Description", lane.getId());
         ChangeTaskDetails changeTaskDetails = new ChangeTaskDetails("New Name", "");
         assertDoesNotThrow(() -> taskService.updateTaskDetails(taskDTO.getId(),changeTaskDetails ));
     }
 
     @Test
     void testDeleteTask() {
-        TaskDTO task = laneService.createTask("Test Task", "Test Description", lane.getTasks().size(), lane);
+        TaskDTO task = laneService.createTask("Test Task", "Test Description", lane.getId());
         assertDoesNotThrow(() -> laneService.deleteTask(task.getId()));
     }
 
     @Test
     void testGetTaskById() {
-        TaskDTO task = laneService.createTask("Test Task", "Test Description",lane.getTasks().size(), lane);
+        TaskDTO task = laneService.createTask("Test Task", "Test Description", lane.getId());
         assertDoesNotThrow(() -> taskService.getTaskById(task.getId()));
     }
 }

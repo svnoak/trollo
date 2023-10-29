@@ -46,7 +46,7 @@ public class TaskControllerTest {
     void setup() {
         workspace = workspaceService.createWorkspace("Test Workspace");
         lane = workspaceService.createLane("Test Lane", workspace.getId());
-        task = laneService.createTask("Test Task", "Test Description", 0, lane);
+        task = laneService.createTask("Test Task", "Test Description", lane.getId());
     }
 
     @Test
@@ -102,7 +102,7 @@ public class TaskControllerTest {
     public void testUpdateTaskBadRequest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/tasks/" + task.getId())
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().is5xxServerError());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test

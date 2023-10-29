@@ -55,13 +55,13 @@ class LaneServiceTest {
     @Test
     void createTask(){
         Lane lane = workspaceService.createLane("Test Lane", workspace.getId());
-        assertDoesNotThrow(() -> laneService.createTask("Test Task","Test Description", 0, lane));
+        assertDoesNotThrow(() -> laneService.createTask("Test Task","Test Description", lane.getId()));
     }
 
     @Test
     void deleteTask(){
         Lane lane = workspaceService.createLane("Test Lane", workspace.getId());
-        TaskDTO taskDTO = laneService.createTask("Test Task","Test Description", 0, lane);
+        TaskDTO taskDTO = laneService.createTask("Test Task","Test Description", lane.getId());
         assertDoesNotThrow(() -> laneService.deleteTask(taskDTO.getId()));
         assertEquals(0, lane.getTasks().size());
     }
@@ -69,9 +69,9 @@ class LaneServiceTest {
     @Test
     void updateTaskPosition() {
         Lane lane = workspaceService.createLane("Test Lane", workspace.getId());
-        TaskDTO task1 = laneService.createTask("Test Task 1", "Test Description", 0, lane);
-        TaskDTO task2 = laneService.createTask("Test Task 2", "Test Description", 1, lane);
-        TaskDTO task3 = laneService.createTask("Test Task 3", "Test Description", 2, lane);
+        TaskDTO task1 = laneService.createTask("Test Task 1", "Test Description", lane.getId());
+        TaskDTO task2 = laneService.createTask("Test Task 2", "Test Description", lane.getId());
+        TaskDTO task3 = laneService.createTask("Test Task 3", "Test Description", lane.getId());
         assertEquals(0, task1.getPosition());
         assertEquals(1, task2.getPosition());
         assertEquals(2, task3.getPosition());

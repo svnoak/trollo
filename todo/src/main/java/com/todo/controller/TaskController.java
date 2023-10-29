@@ -52,11 +52,7 @@ public class TaskController {
     })
     public ResponseEntity<TaskDTO> createTask(@RequestBody CreateTaskRequest task) {
         try {
-        Lane lane = laneService.getLaneById(task.getLaneId());
-        if (lane == null) {
-            return ResponseEntity.notFound().build();
-        }
-            TaskDTO createdTask = laneService.createTask(task.getName(), task.getDescription(), lane.getTasks().size(), lane);
+            TaskDTO createdTask = laneService.createTask(task.getName(), task.getDescription(), task.getLaneId());
             return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
         } catch (ObjectNotFoundException e) {
             return ResponseEntity.notFound().build();
