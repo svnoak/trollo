@@ -1,0 +1,73 @@
+.workspace-menu-item-wrapper {
+    border-radius: 5px;
+    list-style: none;
+    width: 100%;
+    padding: 5px 0;
+    margin: 5px 0px;
+}
+
+.workspace-menu-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    padding: 5px 10px;
+    color: white;
+}
+
+.workspace-menu-item > h3 {
+    font-size: 1rem;
+    white-space: nowrap;
+    flex-grow: 1;
+    font-weight: 400;
+}
+
+.workspace-menu-item:hover {
+    color: white;
+}
+
+.workspace-menu-item-wrapper:hover {
+    background-color: rgba(42,43,50,1);
+    cursor: pointer;
+}
+
+.workspace-menu-item-wrapper:hover,
+.workspace-menu-item-wrapper:hover > .menu-buttons > button {
+    background-color: rgba(42,43,50,1);
+    cursor: pointer;
+}
+
+.workspace-menu-item > .menu-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    width: 2.7rem;
+}
+
+.menu-buttons > button {
+    padding: 0;
+    border: 0px transparent solid;
+    border-radius: 0;
+    color: white;
+    font-size: 1rem;
+}
+
+.menu-buttons:hover > button {
+    cursor: pointer;
+    border: none;
+}
+
+.workspace-menu-item > .menu-buttons > :last-child {
+    color: lightcoral;
+}
+
+
+.active,
+.active:hover {
+    background-color: rgb(52, 53, 65);
+}
+
