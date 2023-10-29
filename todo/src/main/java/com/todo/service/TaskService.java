@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service class for the Task model.
+ */
 @Hidden
 @Service
 public class TaskService {
@@ -24,6 +27,12 @@ public class TaskService {
         this.taskRepository = taskRepository;
     }
 
+    /**
+     * Update the positions of all tasks in a lane.
+     * @param taskId The id of the task to be deleted.
+     * @param taskDetails The new details of the task.
+     * @return The updated task.
+     */
     public TaskDTO updateTaskDetails(int taskId, ChangeTaskDetails taskDetails){
         Task task = taskRepository.findById(taskId).orElse(null);
         if(task == null){
@@ -39,18 +48,31 @@ public class TaskService {
         return new TaskDTO(savedTask);
     }
 
-    public TaskDTO getTaskByIdAsDTO(int id){
-        Task task = taskRepository.findById(id).orElse(null);
+    /**
+     * Delete a task.
+     * @param taskId The id of the task to be deleted.
+     */
+    public TaskDTO getTaskByIdAsDTO(int taskId){
+        Task task = taskRepository.findById(taskId).orElse(null);
         if(task == null){
             return null;
         }
         return new TaskDTO(task);
     }
 
-    public Task getTaskById(int id){
-        return taskRepository.findById(id).orElse(null);
+    /**
+     * Delete a task.
+     * @param taskId The id of the task to be deleted.
+     */
+    public Task getTaskById(int taskId){
+        return taskRepository.findById(taskId).orElse(null);
     }
 
+    /**
+     * Get all tasks in a lane.
+     * @param laneId The id of the lane to get tasks from.
+     * @return A list of all tasks in the lane.
+     */
     public List<TaskDTO> getTasksByLaneId(int laneId) {
         List<Task> tasks = taskRepository.findByLaneId(laneId);
         if (tasks == null) {
