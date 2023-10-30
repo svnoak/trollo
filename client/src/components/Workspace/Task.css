@@ -14,3 +14,25 @@
 .task:hover {
     background-color: rgba(255,255,255,0.5);
 }
+
+.editing {
+    display: flex;
+    flex-direction: column;
+}
+
+.editing > .task-options {
+    display: flex;
+    flex-direction: row;
+    padding-top: 10px;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+}
+
+.task-options > button:last-child:hover {
+    color: darkred;
+}
+
+.task-options > button:first-child:hover {
+    color: darkgreen;
+}

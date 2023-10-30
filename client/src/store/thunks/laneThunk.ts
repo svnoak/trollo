@@ -45,14 +45,17 @@ export const renameLaneAsync = createAsyncThunk(
 
 export const moveLaneAsync = createAsyncThunk(
     "lane/moveLane",
-    async ({lane, newPosition}: {lane: Lane, newPosition: number}) => {
-        const response = await fetch(baseUrl + "/api/lanes/" + lane.id + "/move/" + newPosition, {
+    async ({sourceLaneId, newPosition}: {sourceLaneId: number, newPosition: number}) => {
+
+        const response = await fetch(baseUrl + "/api/lanes/" + sourceLaneId + "/move/" + newPosition, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
         });
-        return await response.json();
+        const json = await response.json();
+        console.log(json);
+        return json;
     }
 );
 

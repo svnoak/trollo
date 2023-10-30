@@ -1,25 +1,37 @@
 .lane {
     background-color: rgba(255,255,255,0.3);
     list-style: none;
-    display: flex;
-    flex-direction: column;
     border-radius: 3px;
     overflow: hidden;
-    justify-content: space-between;
-    align-items: center;
-    height: fit-content;
     grid-row: 1;
     width: 200px;
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
 .lane-header {
-    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    width: 100%;
+}
+
+.drag-handle {
+    cursor: pointer;
+    transition: all .1s ease-in-out;
+}
+
+.drag-handle:hover {
+    color: rgba(255,255,255,0.5);
+}
+
+.lane-title {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
     text-align: center;
+    font-size: 1rem;
 }
 
 .tasks-list {

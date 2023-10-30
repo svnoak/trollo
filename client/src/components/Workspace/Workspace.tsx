@@ -1,11 +1,13 @@
-import { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import "./Workspace.css";
 import Lane from "./Lane";
 import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
-import { fetchAllWorkspaceLanes } from "../../store/thunks/laneThunk";
+import { fetchAllWorkspaceLanes, moveLaneAsync } from "../../store/thunks/laneThunk";
 import { RootState } from "../../store/configureStore";
 import { createLaneAsync } from "../../store/thunks/laneThunk";
+import { DndContext, DragEndEvent } from "@dnd-kit/core";
+import { SortableContext } from "@dnd-kit/sortable";
 
 export default function Workspace() {
   const dispatch = useDispatch<ThunkDispatch<unknown, unknown, any>>();
@@ -28,33 +30,51 @@ export default function Workspace() {
     loadLanes();
   }, [dispatch, activeWorkspace]);
 
-  useEffect(() => {}, [lanes]);
+  //useEffect(() => {}, [lanes]);
+
+  const memoizedLanes = useMemo(() => lanes, [lanes]);
 
   const PlaceHolderWorkspace = () => {
     return <h1>PLACEHOLDER</h1>;
   };
 
+  function handleLaneDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if(!active || !over) return
+    const targetLaneId = over.id;
+    const sourceLaneId = active.id as number;
+    const targetLane = memoizedLanes.find((lane) => lane.id === targetLaneId);
+    if(!targetLane) return
+    const newPosition = targetLane.position;
+
+    dispatch(moveLaneAsync({ sourceLaneId, newPosition }));
+  }
+
 
   const WorkspaceLanes = () => {
-    return (
-      <div className="board">
+   return(
+    <DndContext onDragEnd={handleLaneDragEnd}>
           <ul className="lanes">
-            {lanes &&
-              lanes.length > 0 &&
-              lanes.map((lane: Lane) => <Lane key={lane.id} lane={lane} />)}
+          <SortableContext items={memoizedLanes.map((lane) => lane.id)}>
+            {memoizedLanes &&
+              memoizedLanes.length > 0 &&
+              memoizedLanes.map((lane: Lane) => <Lane key={lane.id} lane={lane} />)}
             <li className="add-lane">
               <button className="add-lane-button" onClick={handleAddLane}>
                 + Add another lane
               </button>
             </li>
+            </SortableContext>
           </ul>
+        </DndContext>
+   )
+  }
+
+    return (
+      <div className="workspace">
+        <div className="board">
+          {activeWorkspace ? <WorkspaceLanes /> : <PlaceHolderWorkspace />}
+        </div>
       </div>
     );
   };
-
-  return (
-    <div className="workspace">
-      {activeWorkspace ? <WorkspaceLanes /> : <PlaceHolderWorkspace />}
-    </div>
-  );
-}

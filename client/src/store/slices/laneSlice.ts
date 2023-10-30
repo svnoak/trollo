@@ -20,6 +20,9 @@ const laneSlice = createSlice({
     lane: null as Lane | null,
   },
   reducers: {
+    setLanes(state, action) {
+      state.lanes = action.payload;
+    }
   },
 
   extraReducers: (builder) => {
@@ -41,12 +44,9 @@ const laneSlice = createSlice({
     });
 
     builder.addCase(moveTaskAsync.fulfilled, (state, action) => {
-      const { sourceLaneId, destinationLaneId, sourceIndex, destinationIndex } =
-        action.payload;
+      const { sourceLaneId, destinationLaneId, sourceIndex, destinationIndex } = action.payload;
       const sourceLane = state.lanes.find((lane) => lane.id === sourceLaneId);
-      const destinationLane = state.lanes.find(
-        (lane) => lane.id === destinationLaneId
-      );
+      const destinationLane = state.lanes.find((lane) => lane.id === destinationLaneId);
       if (sourceLane && destinationLane) {
         const task = sourceLane.tasks.splice(sourceIndex, 1)[0];
         destinationLane.tasks.splice(destinationIndex, 0, task);
@@ -88,9 +88,7 @@ const laneSlice = createSlice({
     });
 
     builder.addCase(moveLaneAsync.fulfilled, (state, action) => {
-      const { sourceIndex, destinationIndex } = action.payload;
-      const lane = state.lanes.splice(sourceIndex, 1)[0];
-      state.lanes.splice(destinationIndex, 0, lane);
+      state.lanes = action.payload.lanes;
     });
 
     builder.addCase(createTaskAsync.fulfilled, (state, action) => {

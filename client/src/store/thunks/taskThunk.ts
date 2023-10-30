@@ -16,13 +16,15 @@ export const updateTaskAsync = createAsyncThunk(
     "task/updateTask",
     async (task: Task) => {
         const response = await fetch(baseUrl + "/api/tasks/" + task.id, {
-            method: "PUT",
+            method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({ name: task.name, description: task.description }),
         });
-        return await response.json();
+        const json = await response.json();
+        console.log(json);
+        return json;
     }
 );
 
