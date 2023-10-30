@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -16,11 +18,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest(classes = ServerApplication.class)
 public class WorkspaceServiceTest {
 
-    private WorkspaceService workspaceService;
+    private final WorkspaceService workspaceService;
+    private final LaneService laneService;
 
     @Autowired
-    public WorkspaceServiceTest(WorkspaceService workspaceService) {
+    public WorkspaceServiceTest(WorkspaceService workspaceService, LaneService laneService) {
         this.workspaceService = workspaceService;
+        this.laneService = laneService;
     }
 
     @Test
@@ -36,7 +40,7 @@ public class WorkspaceServiceTest {
     }
 
     @Test
-    void testMoveLan() {
+    void testMoveLane() {
         Workspace workspace = workspaceService.createWorkspace("Test Workspace");
         Lane lane1 = workspaceService.createLane("Test Lane 1", workspace.getId());
         Lane lane2 = workspaceService.createLane("Test Lane 2", workspace.getId());
@@ -45,9 +49,14 @@ public class WorkspaceServiceTest {
         assertEquals(1, lane2.getPosition());
         assertEquals(2, lane3.getPosition());
         assertDoesNotThrow(() -> workspaceService.moveLane(lane1.getId(), 2));
-        assertEquals(2, lane1.getPosition());
-        assertEquals(0, lane2.getPosition());
-        assertEquals(1, lane3.getPosition());
+
+        Lane updatedLane1 = laneService.getLaneById(lane1.getId());
+        Lane updatedLane2 = laneService.getLaneById(lane2.getId());
+        Lane updatedLane3 = laneService.getLaneById(lane3.getId());
+
+        assertEquals(2, updatedLane1.getPosition());
+        assertEquals(0, updatedLane2.getPosition());
+        assertEquals(1, updatedLane3.getPosition());
     }
 
     @Test

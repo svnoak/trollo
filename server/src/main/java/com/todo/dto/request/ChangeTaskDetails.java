@@ -16,14 +16,22 @@ public class ChangeTaskDetails {
     /**
      * The id of the task to change.
      */
-    @Schema(description = "Name of the task", example = "New Task", required = false)
+    @Schema(description = "Name of the task", example = "New Task")
     private String name;
 
     /**
      * The description of the task.
      */
-    @Schema(description = "Description of the task", example = "This is a new task", required = false)
+    @Schema(description = "Description of the task", example = "This is a new task")
     private String description;
+
+    /**
+     * Constructor for the ChangeTaskDetails.
+     */
+    public ChangeTaskDetails() {
+        this.name = null;
+        this.description = null;
+    }
 
     /**
      * Constructor for the ChangeTaskDetails.

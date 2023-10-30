@@ -9,6 +9,7 @@ import com.todo.service.LaneService;
 import com.todo.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,8 +24,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/tasks")
 public class TaskController {
 
-    private TaskService taskService;
-    private LaneService laneService;
+    private final TaskService taskService;
+    private final LaneService laneService;
 
     @Autowired
     public TaskController(TaskService taskService, LaneService laneService) {
@@ -98,6 +99,11 @@ public class TaskController {
     @PatchMapping("/{taskId}/move")
     @Operation(summary = "Move task to another lane")
     @Parameter(name = "taskId", description = "Id of the task to be moved", required = true)
+    @Parameters({
+            @Parameter(name = "sourceLaneId", description = "Id of the lane the task is currently in", required = true),
+            @Parameter(name = "targetLaneId", description = "Id of the lane the task should be moved to", required = true),
+            @Parameter(name = "newTaskPosition", description = "Position of the task in the new lane", required = true)
+    })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully moved task to another lane"),
             @ApiResponse(responseCode = "400", description = "Bad request"),

@@ -17,13 +17,13 @@ public class CreateLaneRequest {
      * The id of the workspace to create the lane in.
      */
     @NotNull
-    @Schema(description = "Id of the workspace to create the lane in", example = "1", required = true)
+    @Schema(description = "Id of the workspace to create the lane in", example = "1")
     private int workspaceId;
 
     /**
      * The name of the lane.
      */
-    @Schema(description = "Name of the lane", example = "New Lane", required = false)
+    @Schema(description = "Name of the lane", example = "New Lane")
     private String name;
 
     /**

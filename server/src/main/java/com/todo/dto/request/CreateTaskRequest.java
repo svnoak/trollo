@@ -18,7 +18,7 @@ public class CreateTaskRequest {
     /**
      * The id of the lane to create the task in.
      */
-    @Schema(description = "Id of the lane to create the task in", example = "1", required = true)
+    @Schema(description = "Id of the lane to create the task in", example = "1")
     @NotNull
     @PositiveOrZero
     private int laneId;
@@ -26,13 +26,13 @@ public class CreateTaskRequest {
     /**
      * The name of the task.
      */
-    @Schema(description = "Name of the task", example = "New Task", required = false)
+    @Schema(description = "Name of the task", example = "New Task")
     private String name;
 
     /**
      * The description of the task.
      */
-    @Schema(description = "Description of the task", example = "This is a new task", required = false)
+    @Schema(description = "Description of the task", example = "This is a new task")
     private String description;
 
     /**

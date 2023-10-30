@@ -20,8 +20,15 @@ public class CreateWorkspaceRequest {
          */
         @NotNull
         @NotEmpty
-        @Schema(description = "Name of the workspace", example = "New Workspace", required = true)
+        @Schema(description = "Name of the workspace", example = "New Workspace")
         private String name;
+
+        /**
+         * Constructor for the CreateWorkspaceRequest.
+         */
+        public CreateWorkspaceRequest() {
+                this.name = null;
+        }
 
         /**
          * Constructor for the CreateWorkspaceRequest.

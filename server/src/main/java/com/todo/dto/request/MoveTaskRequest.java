@@ -19,7 +19,7 @@ public class MoveTaskRequest {
      */
     @NotNull
     @PositiveOrZero
-    @Schema(description = "Id of the lane to move the task from", example = "1", required = true)
+    @Schema(description = "Id of the lane to move the task from", example = "1")
     private int sourceLaneId;
 
     /**
@@ -27,7 +27,7 @@ public class MoveTaskRequest {
      */
     @NotNull
     @PositiveOrZero
-    @Schema(description = "Id of the lane to move the task to", example = "2", required = true)
+    @Schema(description = "Id of the lane to move the task to", example = "2")
     private int targetLaneId;
 
     /**
@@ -35,7 +35,7 @@ public class MoveTaskRequest {
      */
     @NotNull
     @PositiveOrZero
-    @Schema(description = "Position of the task in the new lane", example = "0", required = true)
+    @Schema(description = "Position of the task in the new lane", example = "0")
     private int newTaskPosition;
 
     /**
