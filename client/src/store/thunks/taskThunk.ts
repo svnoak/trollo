@@ -59,14 +59,19 @@ export const deleteTaskAsync = createAsyncThunk(
 
 export const moveTaskAsync = createAsyncThunk(
     "task/moveTask",
-    async ({taskId, sourceLaneId, targetLaneId, sourceIndex, destinationIndex}: {taskId: number, sourceLaneId: number, targetLaneId: number, sourceIndex: number, destinationIndex: number}) => {
+    async ({taskId, sourceLaneId, destinationLaneId, sourceIndex, destinationIndex}: {taskId: number, sourceLaneId: number, destinationLaneId: number, sourceIndex: number, destinationIndex: number}) => {
+        console.log("THUNK");
         const response = await fetch(baseUrl + "/api/tasks/" + taskId + "/move", {
-            method: "PUT",
+            method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ sourceLaneId, targetLaneId, newTaskPosition: destinationIndex }),
+            body: JSON.stringify({ sourceLaneId, destinationLaneId, newTaskPosition: destinationIndex }),
         });
-        return await response.json();
+        console.log(response);
+        if(!response.ok) {
+            throw new Error("Error moving task");
+        }
+        return { taskId, sourceLaneId, destinationLaneId, sourceIndex, destinationIndex};
     }
 );

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import "./Workspace.css";
 import Lane from "./Lane";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,6 +9,14 @@ import { createLaneAsync } from "../../store/thunks/laneThunk";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
 
+/**
+ * The workspace component.
+ * This component displays the workspace and its lanes.
+ * 
+ * @returns A React component that displays the workspace.
+ * 
+ * TODO:
+ */
 export default function Workspace() {
   const dispatch = useDispatch<ThunkDispatch<unknown, unknown, any>>();
   const lanes = useSelector((state: RootState) => state.lane.lanes);
@@ -16,28 +24,38 @@ export default function Workspace() {
     (state: RootState) => state.workspace.workspace
   );
 
+  /**
+   * Loads the lanes for the workspace.
+   * @returns 
+   */
   function loadLanes() {
     if (!activeWorkspace) return;
     dispatch(fetchAllWorkspaceLanes(activeWorkspace.id));
   }
 
+  /**
+   * Handles the add lane event.
+   * @returns 
+   */
   function handleAddLane() {
     if (!activeWorkspace) return;
     dispatch(createLaneAsync(activeWorkspace.id));
   }
 
+  /**
+   * Fetches the lanes for the workspace.
+   */
   useEffect(() => {
     loadLanes();
   }, [dispatch, activeWorkspace]);
 
-  //useEffect(() => {}, [lanes]);
-
   const memoizedLanes = useMemo(() => lanes, [lanes]);
 
-  const PlaceHolderWorkspace = () => {
-    return <h1>PLACEHOLDER</h1>;
-  };
-
+  /**
+   * Handles the lane drag end event.
+   * @param event - Drag end event.
+   * @returns
+   */
   function handleLaneDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if(!active || !over) return
@@ -51,6 +69,10 @@ export default function Workspace() {
   }
 
 
+  /**
+   * Displays the workspace lanes.
+   * @returns Workspace lanes.
+   */
   const WorkspaceLanes = () => {
    return(
     <DndContext onDragEnd={handleLaneDragEnd}>
@@ -69,6 +91,14 @@ export default function Workspace() {
         </DndContext>
    )
   }
+
+  /**
+   * Shows a placeholder when no workspace is selected.
+   * @returns Placeholder workspace.
+   */
+  const PlaceHolderWorkspace = () => {
+    return <h1>PLACEHOLDER</h1>;
+  };
 
     return (
       <div className="workspace">

@@ -5,6 +5,11 @@ import WorkspaceMenuItem from './WorkspaceMenuItem';
 import './WorkspaceMenu.css';
 import {ThunkDispatch} from "@reduxjs/toolkit";
 import { selectWorkspaces } from '../../store/selectors/workspaceSelector';
+
+/**
+ * The workspace menu component.
+ * @returns WorkspaceMenu component
+ */
 export default function WorkspaceMenu() {
 
   const workspaces = useSelector(selectWorkspaces);

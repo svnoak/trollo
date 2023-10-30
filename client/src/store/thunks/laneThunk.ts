@@ -22,10 +22,14 @@ export const createLaneAsync = createAsyncThunk(
 export const deleteLaneAsync = createAsyncThunk(
     "lane/deleteLane",
     async (laneId: number ) => {
-        const response = await fetch(baseUrl + "/api/lanes" + laneId, {
+        const response = await fetch(baseUrl + "/api/lanes/" + laneId, {
             method: "DELETE",
         });
-        return response;
+
+        if(!response.ok) {
+            throw new Error("Error deleting lane");
+        }
+        return laneId;
     }
 );
 

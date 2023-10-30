@@ -12,6 +12,11 @@ type WorkspaceMenuItemProps = {
     workspace: Workspace;
   };
 
+  /**
+   * The workspace menu item component.
+   * @param workspace The workspace object to be displayed.
+   * @returns Workspace menu item component
+   */
   export default function WorkspaceMenuItem({workspace}: WorkspaceMenuItemProps) {
     const {id, name} = workspace
     
@@ -23,17 +28,26 @@ type WorkspaceMenuItemProps = {
 
     const dispatch = useDispatch<ThunkDispatch<unknown, unknown, any>>();
 
+    /**
+     * Sets the active workspace.
+     */
     useEffect((
     ) => {
         setIsActive(activeWorkspace?.id === workspace.id);
     }, [activeWorkspace, workspace]);
 
+    /**
+     * Sets the focus on the input field when editing.
+     */
     useEffect(() => {
         if (isEditing && inputRef.current) {
             inputRef.current.focus();
         }
     }, [isEditing]);
 
+    /**
+     * Handles the click outside event.
+     */
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
@@ -56,6 +70,10 @@ type WorkspaceMenuItemProps = {
         };
     }, [workspaceName]);
 
+    /**
+     * Submits changes
+     * @param name The new name of the workspace.
+     */
     async function submitWorkspaceEdit(name: string) {
         setIsEditing(false);
             const response = await dispatch(updateWorkspaceNameAsync({id, name}));
@@ -65,12 +83,20 @@ type WorkspaceMenuItemProps = {
             }
     }
 
+    /**
+     * Handles the edit of the workspace name
+     * @param event The edit event.
+     */
     function handleEdit(event: React.MouseEvent<HTMLButtonElement>) {
         event?.stopPropagation();
         setIsEditing(true);
         inputRef.current?.focus();
     }
 
+    /**
+     * Hanldes deletion of the workspace
+     * @param event The delete event.
+     */
     function handleDelete(event: React.MouseEvent<HTMLButtonElement>) {
         event?.stopPropagation();
         const response = dispatch(deleteWorkspaceAsync(id));
@@ -80,6 +106,9 @@ type WorkspaceMenuItemProps = {
         dispatch(setActiveWorkspace(null));
     }
 
+    /**
+     * Handles the active workspace event.
+     */
     function handleActive() {
         dispatch(setActiveWorkspace(workspace));
     }
