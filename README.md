@@ -66,4 +66,5 @@ After starting the server, you can access the Swagger documentation at:
 
 # Remarks
 This is only a small project to get back into Java as well as wrapping my head around some concepts.
+
 This Readme is in parts also written by chatGPT.
