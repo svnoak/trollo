@@ -30,7 +30,7 @@ export default function Workspace() {
     loadLanes();
   }, [dispatch, activeWorkspace]);
 
-  useEffect(() => {}, [lanes]);
+  useEffect(() => {console.log("Rerendering")}, [lanes]);
 
   const PlaceHolderWorkspace = () => {
     return(
@@ -47,8 +47,8 @@ export default function Workspace() {
               <Lane key={lane.id} lane={lane} />
             ))
           )}
-          <li>
-            <button className="add-lane" onClick={handleAddLane}>+ Add another lane</button>
+          <li className="add-lane">
+            <button className="add-lane-button" onClick={handleAddLane}>+ Add another lane</button>
           </li>
         </ul>
       </div>

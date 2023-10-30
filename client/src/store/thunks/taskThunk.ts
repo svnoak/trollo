@@ -2,11 +2,13 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 const baseUrl = "http://localhost:3000";
 
-export const fetchTasksAsync = createAsyncThunk(
+export const fetchAllLaneTasksAsync = createAsyncThunk(
     "task/fetchTasks",
     async (laneId: number) => {
         const response = await fetch(baseUrl + "/api/lanes/" + laneId + "/tasks");
-        return await response.json();
+        const json = await response.json();
+        const payload = { id: laneId, tasks: json };
+        return payload;
     }
 );
 
@@ -26,15 +28,17 @@ export const updateTaskAsync = createAsyncThunk(
 
 export const createTaskAsync = createAsyncThunk(
     "task/createTask",
-    async (task: Task) => {
+    async (laneId: number) => {
         const response = await fetch(baseUrl + "/api/tasks", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ name: task.name }),
+            body: JSON.stringify({ laneId, name: "New Task" }),
         });
-        return await response.json();
+        const json = await response.json();
+        const payload = { id: laneId, task: json };
+        return payload;
     }
 );
 

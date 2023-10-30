@@ -25,10 +25,14 @@ const workspaceSlice = createSlice({
     },
     
     setActiveWorkspace(state, action) {
-      const id = action.payload.id;
-      state.workspace = state.workspacesArray.find(
-        (workspace: { id: number }) => workspace.id === id
-      );
+      if(!action.payload) {
+        state.workspace = undefined;
+      } else {
+        const id = action.payload.id;
+        state.workspace = state.workspacesArray.find(
+          (workspace: { id: number }) => workspace.id === id
+        );
+      }
     },
 
   },
@@ -39,7 +43,6 @@ const workspaceSlice = createSlice({
 
     builder.addCase(deleteWorkspaceAsync.fulfilled, (state, action) => {
       const id = action.payload;
-      console.log(action.payload);
       state.workspacesArray = state.workspacesArray.filter(
         (workspace: { id: number }) => workspace.id !== id
       );

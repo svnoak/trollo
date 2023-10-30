@@ -1,6 +1,5 @@
 .lane {
-    width: 250px;
-    background-color: green;
+    background-color: rgba(255,255,255,0.3);
     margin-right: 10px;
     list-style: none;
     display: flex;
@@ -10,5 +9,29 @@
     border-radius: 3px;
     overflow: hidden;
     justify-content: space-between;
+    align-items: center;
     height: fit-content;
+    grid-row: 1;
+    width: 300px;
+}
+
+.lane-header {
+    padding: 10px 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.add-task-button {
+    background-color: rgba(255, 255, 255, 0.2);
+    height: fit-content;
+    padding: 10px 15px;
+    border-radius: 3px;
+    margin: 10px;
+}
+
+.add-task-button:hover {
+    background-color: rgba(255, 255, 255, 0.3);
 }

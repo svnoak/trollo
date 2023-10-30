@@ -11,7 +11,6 @@ export default function WorkspaceMenu() {
   const dispatch = useDispatch<ThunkDispatch<unknown, unknown, any>>();
 
   useEffect(() => {
-    console.log("Fetching workspaces");
     const fetchWorkspacesData = async () => {
       try {
         dispatch(fetchWorkspaces())
@@ -27,7 +26,6 @@ export default function WorkspaceMenu() {
     try {
       await dispatch(createWorkspaceAsync());
       dispatch(fetchWorkspaces());
-      console.log("Created new workspace");
     } catch (error) {
       alert('Failed to create workspace');
     }

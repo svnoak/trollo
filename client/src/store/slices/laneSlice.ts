@@ -6,7 +6,7 @@ import {
   deleteLaneAsync,
   moveLaneAsync,
 } from "../thunks/laneThunk";
-import { deleteTaskAsync, fetchTasksAsync, moveTaskAsync, updateTaskAsync } from "../thunks/taskThunk";
+import { createTaskAsync, deleteTaskAsync, fetchAllLaneTasksAsync, moveTaskAsync, updateTaskAsync } from "../thunks/taskThunk";
 
 export type LaneState = {
   lanes: Lane[];
@@ -87,9 +87,11 @@ const laneSlice = createSlice({
   },
 
   extraReducers: (builder) => {
-    builder.addCase(fetchTasksAsync.fulfilled, (state, action) => {
-      if (state.lanes) {
-        state.lanes = action.payload;
+    builder.addCase(fetchAllLaneTasksAsync.fulfilled, (state, action) => {
+      console.log("FETCHING TASKS FROM THUN", action.payload);
+      const lane = state.lanes.find((lane) => lane.id === action.payload.id);
+      if (lane) {
+        lane.tasks = action.payload.tasks;
       }
     });
 
@@ -154,6 +156,15 @@ const laneSlice = createSlice({
       const { sourceIndex, destinationIndex } = action.payload;
       const lane = state.lanes.splice(sourceIndex, 1)[0];
       state.lanes.splice(destinationIndex, 0, lane);
+    });
+
+    builder.addCase(createTaskAsync.fulfilled, (state, action) => {
+      const { id, task } = action.payload;
+      console.log("BUILDER", action.payload);
+      const lane = state.lanes.find((lane) => lane.id === id);
+      if (lane) {
+        lane.tasks.push(task);
+      }
     });
   },
 });

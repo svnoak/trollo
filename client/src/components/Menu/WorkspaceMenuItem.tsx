@@ -37,15 +37,12 @@ type WorkspaceMenuItemProps = {
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
-                console.log('Clicked outside');
                 submitWorkspaceEdit(workspaceName);
             }
         }
 
         function handleKeyDown(event: KeyboardEvent) {
             if (event.key === 'Enter' && inputRef.current) {
-                console.log('Pressed enter');
-                console.log("Workspace name", workspaceName);
                 submitWorkspaceEdit(workspaceName);
             }
         }
@@ -61,7 +58,6 @@ type WorkspaceMenuItemProps = {
 
     async function submitWorkspaceEdit(name: string) {
         setIsEditing(false);
-        console.log('Submitting workspace edit', name);
             const response = await dispatch(updateWorkspaceNameAsync({id, name}));
             if((response as {error?: string}).error) {
                 setWorkspaceName(workspace.name);
@@ -71,7 +67,6 @@ type WorkspaceMenuItemProps = {
 
     function handleEdit(event: React.MouseEvent<HTMLButtonElement>) {
         event?.stopPropagation();
-        console.log('Edit button clicked');
         setIsEditing(true);
         inputRef.current?.focus();
     }
@@ -82,14 +77,12 @@ type WorkspaceMenuItemProps = {
         if((response as {error?: string}).error) {
             alert('Failed to delete workspace');
         }
+        dispatch(setActiveWorkspace(null));
     }
 
     function handleActive() {
-        console.log("Clicked");
         dispatch(setActiveWorkspace(workspace));
     }
-
-    console.log('WorkspaceMenuItem rendered', workspace.id);
 
     return(
         <li className={`workspace-menu-item-wrapper ${isActive ? 'active' : ''}`} key={id} onClick={handleActive}>

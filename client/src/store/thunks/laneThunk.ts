@@ -15,7 +15,6 @@ export const createLaneAsync = createAsyncThunk(
         if(!response.ok) {
             throw new Error("Error creating lane");
         }
-        console.log(await response.json());
         return await response.json();
     }
 );

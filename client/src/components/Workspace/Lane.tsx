@@ -1,6 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Task from "./Task";
 import './Lane.css'
+import { useDispatch, useSelector } from "react-redux";
+import { selectTasksByLaneId } from "../../store/selectors/taskSelector";
+import { ThunkDispatch } from "@reduxjs/toolkit";
+import { createTaskAsync, fetchAllLaneTasksAsync } from "../../store/thunks/taskThunk";
 
 type LaneProps = {
     lane: Lane
@@ -8,24 +12,31 @@ type LaneProps = {
 
 export default function  Lane({lane}: LaneProps) {
     const {name, id} = lane
+    const dispatch = useDispatch<ThunkDispatch<unknown, unknown, any>>();
 
+    const tasks: Task[] = useSelector(selectTasksByLaneId(id));
+    
     function fetchTasks() {
-        fetch(`http://localhost:3000/api/lanes/${id}/tasks`)
-        .then(response => response.json())
-        .then(data => setTasks(data))
+        if(tasks) return;
+        dispatch(fetchAllLaneTasksAsync(id));
     }
 
-    const [tasks, setTasks] = useState<Array<Task>>([])
+    function addTaskHandler() {
+        dispatch(createTaskAsync(id));
+    }
+
     useEffect(() => {
         fetchTasks();
     }, [])
 
+    useEffect(() => {console.log("NEW TASKS")}, [tasks])
+
     return(
         <li key={id} className="lane">
-            <h3>{name}</h3>
+            <h3 className="lane-header">{name}</h3>
             <ul>
-                {tasks.map((task: Task) => <Task task={task} />)}
-                <li><button>+ Add Task</button></li>
+                {tasks && tasks.map((task: Task) => <Task task={task} />)}
+                <li className="add-task"><button className="add-task-button" onClick={addTaskHandler}>+ Add Task</button></li>
             </ul>
         </li>
     )
