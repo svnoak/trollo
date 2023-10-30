@@ -23,7 +23,7 @@ Follow these steps to get Trollo up and running:
 
    ```bash
    cd ./server
-   ./gradlew clean install
+   ./gradlew clean build
    ```
 
    This command will compile the server code and create the necessary JAR file.
