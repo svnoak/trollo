@@ -13,13 +13,15 @@
 .lanes {
     display: grid;
     grid-template-columns: auto;
-    overflow-x: auto;
+    gap: 10px;
+    height: 95vh;
 }
 
 .add-lane {
     list-style-type: none;
     height: fit-content;
     grid-row: 1;
+    width: 200px;
 }
 
 .add-lane-button {

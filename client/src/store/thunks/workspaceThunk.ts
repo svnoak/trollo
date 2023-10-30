@@ -42,7 +42,6 @@ export const createWorkspaceAsync = createAsyncThunk(
 export const updateWorkspaceNameAsync = createAsyncThunk(
     "workspace/updateWorkspaceName",
     async (workspace: {id: number, name: string}) => {
-        console.log(workspace.id);
         const response = await fetch(baseUrl + "/api/workspaces/" + workspace.id + "/name", {
             method: "PATCH",
             headers: {

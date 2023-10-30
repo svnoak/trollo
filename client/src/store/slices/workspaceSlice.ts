@@ -1,5 +1,10 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { createWorkspaceAsync, deleteWorkspaceAsync, fetchWorkspaces, updateWorkspaceNameAsync } from "../thunks/workspaceThunk";
+import { createSlice } from "@reduxjs/toolkit";
+import {
+  createWorkspaceAsync,
+  deleteWorkspaceAsync,
+  fetchWorkspaces,
+  updateWorkspaceNameAsync,
+} from "../thunks/workspaceThunk";
 
 export type WorkspaceState = {
   workspacesArray: Workspace[];
@@ -13,19 +18,8 @@ const workspaceSlice = createSlice({
     workspace: undefined as Workspace | undefined,
   },
   reducers: {
-    deleteWorkspace(state, action) {
-      const id = action.payload;
-      state.workspacesArray = state.workspacesArray.filter(
-        (workspace: { id: number }) => workspace.id !== id
-      );
-    },
-
-    createWorkspace(state, action: PayloadAction<Workspace>) {
-      state.workspacesArray.push(action.payload);
-    },
-    
     setActiveWorkspace(state, action) {
-      if(!action.payload) {
+      if (!action.payload) {
         state.workspace = undefined;
       } else {
         const id = action.payload.id;
@@ -34,7 +28,6 @@ const workspaceSlice = createSlice({
         );
       }
     },
-
   },
   extraReducers: (builder) => {
     builder.addCase(fetchWorkspaces.fulfilled, (state, action) => {
@@ -46,7 +39,7 @@ const workspaceSlice = createSlice({
       state.workspacesArray = state.workspacesArray.filter(
         (workspace: { id: number }) => workspace.id !== id
       );
-    })
+    });
 
     builder.addCase(createWorkspaceAsync.fulfilled, (state, action) => {
       state.workspacesArray.push(action.payload);
@@ -61,13 +54,9 @@ const workspaceSlice = createSlice({
         workspace.name = name;
       }
     });
-  }
+  },
 });
 
-export const {
-  deleteWorkspace,
-  createWorkspace,
-  setActiveWorkspace,
-} = workspaceSlice.actions;
+export const { setActiveWorkspace } = workspaceSlice.actions;
 
 export default workspaceSlice.reducer;

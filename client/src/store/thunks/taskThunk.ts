@@ -48,19 +48,22 @@ export const deleteTaskAsync = createAsyncThunk(
         const response = await fetch(baseUrl + "/api/tasks/" + task.id, {
             method: "DELETE",
         });
-        return await response.json();
+        if(!response.ok) {
+            throw new Error("Error deleting task");
+        }
+        return task;
     }
 );
 
 export const moveTaskAsync = createAsyncThunk(
     "task/moveTask",
-    async (task: Task) => {
-        const response = await fetch(baseUrl + "/api/tasks/" + task.id + "/move", {
+    async ({taskId, sourceLaneId, targetLaneId, sourceIndex, destinationIndex}: {taskId: number, sourceLaneId: number, targetLaneId: number, sourceIndex: number, destinationIndex: number}) => {
+        const response = await fetch(baseUrl + "/api/tasks/" + taskId + "/move", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ sourceLaneId: task.laneId, targetLaneId: task.laneId, newTaskPosition: task.position }),
+            body: JSON.stringify({ sourceLaneId, targetLaneId, newTaskPosition: destinationIndex }),
         });
         return await response.json();
     }

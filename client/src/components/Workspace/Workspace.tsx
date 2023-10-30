@@ -10,19 +10,17 @@ import { createLaneAsync } from "../../store/thunks/laneThunk";
 export default function Workspace() {
   const dispatch = useDispatch<ThunkDispatch<unknown, unknown, any>>();
   const lanes = useSelector((state: RootState) => state.lane.lanes);
-  const activeWorkspace = useSelector((state: RootState) => state.workspace.workspace);
-  
+  const activeWorkspace = useSelector(
+    (state: RootState) => state.workspace.workspace
+  );
+
   function loadLanes() {
-    console.log("Loading lanes");
-    console.log(activeWorkspace);
-    if(!activeWorkspace) return;
+    if (!activeWorkspace) return;
     dispatch(fetchAllWorkspaceLanes(activeWorkspace.id));
   }
 
   function handleAddLane() {
-    console.log("Add lane");
-    console.log(activeWorkspace);
-    if(!activeWorkspace) return;
+    if (!activeWorkspace) return;
     dispatch(createLaneAsync(activeWorkspace.id));
   }
 
@@ -30,30 +28,29 @@ export default function Workspace() {
     loadLanes();
   }, [dispatch, activeWorkspace]);
 
-  useEffect(() => {console.log("Rerendering")}, [lanes]);
+  useEffect(() => {}, [lanes]);
 
   const PlaceHolderWorkspace = () => {
-    return(
-      <h1>PLACEHOLDER</h1>
-    )
-  }
+    return <h1>PLACEHOLDER</h1>;
+  };
+
 
   const WorkspaceLanes = () => {
-    return(
+    return (
       <div className="board">
-        <ul className="lanes">
-          {lanes && lanes.length > 0 && (
-            lanes.map((lane: Lane) => (
-              <Lane key={lane.id} lane={lane} />
-            ))
-          )}
-          <li className="add-lane">
-            <button className="add-lane-button" onClick={handleAddLane}>+ Add another lane</button>
-          </li>
-        </ul>
+          <ul className="lanes">
+            {lanes &&
+              lanes.length > 0 &&
+              lanes.map((lane: Lane) => <Lane key={lane.id} lane={lane} />)}
+            <li className="add-lane">
+              <button className="add-lane-button" onClick={handleAddLane}>
+                + Add another lane
+              </button>
+            </li>
+          </ul>
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <div className="workspace">

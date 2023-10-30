@@ -31,13 +31,13 @@ export const deleteLaneAsync = createAsyncThunk(
 
 export const renameLaneAsync = createAsyncThunk(
     "lane/renameLane",
-    async (lane: Lane) => {
-        const response = await fetch(baseUrl + "/api/lanes/" + lane.id, {
+    async ({id, name}: {id: number, name: string}) => {
+        const response = await fetch(baseUrl + "/api/lanes/" + id + "/name", {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ name: lane.name }),
+            body: name,
         });
         return await response.json();
     }

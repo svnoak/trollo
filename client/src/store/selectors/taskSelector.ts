@@ -6,7 +6,6 @@ export const selectTasksByLaneId = (laneId: number) =>
         (state: RootState) => state.lane.lanes,
         (lanes) => {
             const lane = lanes.find((lane) => lane.id === laneId);
-            console.log("SELECTOR");
             return lane ? lane.tasks : [];
         }
     );

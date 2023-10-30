@@ -1,18 +1,15 @@
 .lane {
     background-color: rgba(255,255,255,0.3);
-    margin-right: 10px;
     list-style: none;
     display: flex;
     flex-direction: column;
-    flex-shrink: 0;
-    flex-grow: 0;
     border-radius: 3px;
     overflow: hidden;
     justify-content: space-between;
     align-items: center;
     height: fit-content;
     grid-row: 1;
-    width: 300px;
+    width: 200px;
 }
 
 .lane-header {
@@ -22,16 +19,22 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    text-align: center;
+}
+
+.tasks-list {
+    width: 100%;
 }
 
 .add-task-button {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.1);
     height: fit-content;
     padding: 10px 15px;
     border-radius: 3px;
     margin: 10px;
+    transition: all .1s ease-in-out;
 }
 
 .add-task-button:hover {
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.2);
 }

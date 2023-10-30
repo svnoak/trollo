@@ -1,11 +1,16 @@
 .task {
-    background-color: rgba(255,255,255,0.3);
+    background-color: rgba(255,255,255,0.4);
     margin: 10px;
-    padding: 10px;
+    padding: 10px 15px;
     border-radius: 3px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
+    cursor: pointer;
+    user-select: none;
+}
+
+.task:hover {
+    background-color: rgba(255,255,255,0.5);
 }
