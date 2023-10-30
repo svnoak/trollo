@@ -1,5 +1,3 @@
-Certainly, here's an improved and more concise README for your Trollo project, including installation instructions and commands:
-
 # Trollo - A Trello Clone
 
 Trollo is a Trello clone with a server written in Java using Spring Boot and Hibernate with H2 for both testing and running, and a client running React with TypeScript through Vite, using Redux for state management.
@@ -65,3 +63,7 @@ Follow these steps to get Trollo up and running:
 After starting the server, you can access the Swagger documentation at:
 
 [http://localhost:3000/swagger-ui.html](http://localhost:3000/swagger-ui.html)
+
+# Remarks
+This is only a small project to get back into Java as well as wrapping my head around some concepts.
+This Readme is in parts also written by chatGPT.
